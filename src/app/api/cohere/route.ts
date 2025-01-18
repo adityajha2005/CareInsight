@@ -83,6 +83,7 @@ Description: I'm feeling short of breath
 - The information is concise, actionable, and fits the format.
 - Always prioritize **safety** and **urgency** in medical emergencies.
 - Use **simple language** and **clear instructions**.
+- No need to include ** in the output and bold the important keywords.
 } 
   Situation: ${prompt}`,
       // prompt: `Given the following situation, analyze it and provide an output in JSON format with an urgency level (high, medium, or low) and a description. Situation: I have cough cold and high fever`,

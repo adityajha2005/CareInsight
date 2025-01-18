@@ -21,7 +21,7 @@ export default function FeedbackForm({ onSubmit }: { onSubmit: (feedback: any) =
         {[1, 2, 3, 4, 5].map((star) => (
           <button
             key={star}
-            className={`p-1 ${rating >= star ? 'text-yellow-500' : 'text-gray-400'}`}
+            className={`p-1 ${(rating ?? 0) >= star ? 'text-yellow-500' : 'text-gray-400'}`}
             onClick={() => setRating(star)}
           >
             <Star />
