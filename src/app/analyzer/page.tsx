@@ -8,7 +8,7 @@ import React, {useState} from 'react'
 import {Toggle} from '@/components/ui/toggle'
 import {AnalysisResults} from '@/components/analysis-results'
 import {motion} from 'motion/react'
-
+import FeedbackForm from '@/components/feedback'
 const spring_transition = {
     type: "spring",
     stiffness: 200, // Controls how tight the spring is
@@ -117,36 +117,23 @@ export default function Home() {
         } finally {
             setIsLoading(false)
         }
-
-        // const mockResponse = {
-        //   probable_medical_conditions: ['Broken arm', 'Severe Pain'],
-        //   urgency: 'High',
-        //   action: [
-        //     'Call your doctor to seek medical care.',
-        //     "If you have a large amount of swelling or mild deformity of the arm, significant pain that is not relieved by ice and home pain medications, or pain in one specific part of the arm when it is pressed, your doctor may advise you to go directly to a hospital's emergency department.",
-        //     'If you have a visible bone sticking out through the skin, heavy bleeding from an open wound, complete lack of movement or sensation of part of the arm, obvious deformity that looks drastically different from the usual appearance, or loss of consciousness, go directly to the hospital for emergency care.',
-        //     'If you have a loud cracking or snap, raise the injured arm above the level of your heart to slow bleeding and reduce swelling. If a broken bone sticks out from the skin (open fracture), do not try to push it back in.',
-        //   ],
-        //   what_to_avoid: [],
-        //   common_symptoms: [
-        //     'Large amount of pain',
-        //     'Increased pain when moving the arm',
-        //     'Warmth, bruising, or redness',
-        //     'Difficulty using or moving the arm normally',
-        //     'Nausea',
-        //   ],
-        //   precautions: [
-        //     'Do not try to push a broken bone back in if it sticks out from the skin.',
-        //   ],
-        //   relevant_resources: [
-        //     'https://www.webmd.com/a-to-z-guides/broken-arm',
-        //     'https://www.childrenshospital.org/conditions/broken-arm',
-        //     'https://fortworthhandcenter.com/surgery/5-signs-broken-arm/',
-        //     'https://www.cedars-sinai.org/health-library/diseases-and-conditions/b/broken-fractured-arm-or-shoulder.html',
-        //   ],
-        // }
     }
-
+    const [feedbackSubmitted, setFeedbackSubmitted] = useState(false);
+    const handleFeedbackSubmit = async (feedback: any) => {
+        try {
+          await fetch('/api/feedback', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ analysisResult, feedback }),
+          });
+          setFeedbackSubmitted(true);
+        } catch (error) {
+          console.error('Error submitting feedback:', error);
+        }
+      };
+    
     return (
         <main className="min-h-screen bg-gray-50">
             <div className="max-w-2xl mx-auto px-4 py-8">
@@ -218,6 +205,11 @@ export default function Home() {
                         transition={spring_transition}
                     >
                         <AnalysisResults data={analysisResult} showDialog={false}/>
+                        {!feedbackSubmitted ? (
+              <FeedbackForm onSubmit={handleFeedbackSubmit} />
+            ) : (
+              <p className="mt-4 text-green-600">Thank you for your feedback!</p>
+            )}
                     </motion.div>}
             </div>
         </main>

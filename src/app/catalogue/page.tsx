@@ -12,7 +12,6 @@ const spring_transition = {
     duration: 0.6,  // Optional, spring usually ignores this unless combined
 }
 
-// TODO: This would one be placed in a database that could be freely changed, hardcoded for now cus bad
 const illnessesData = [
     {
         name: "Fungal infection",

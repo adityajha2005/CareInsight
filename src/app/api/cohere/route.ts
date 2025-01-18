@@ -15,54 +15,74 @@ export async function POST(req: Request) {
   try {
     const result = await generateText({
       model: cohere('command-r-08-2024'),
-      prompt: `Provide critical information for a medical emergency or general situation based on the symptoms and description provided. Use first person. Use simple words and simple vocabulary. Adhere strictly to the output format instructions and ensure the information is concise and actionable. Use "you" directly, but avoid starting sentences with "you." Begin sentences with verbs. Follow the instructions meticulously.
+      prompt: `Provide critical medical information based on the symptoms and description provided. Use **simple, easy-to-understand language** with a focus on being concise, actionable, and helpful. Address the user directly using "you" but avoid starting sentences with "you." Begin sentences with verbs, and keep instructions practical and precise.
 
-Desired output format in json:
+**Important Guidelines:**
+1. Use **first-person language** and keep the tone supportive.
+2. Adhere strictly to the **JSON output format**.
+3. Include a maximum of **3 probable medical conditions** (use layman's terms).
+4. Ensure the actions and precautions are easy to follow and no more than **8 points** in total. Highlight critical words with **bold formatting**.
+5. Avoid lengthy sentences and unnecessary medical jargon.
+6. Use reliable and **relevant resources** with links to trusted sites (e.g., Mayo Clinic, NHS, CDC).
+
+**Desired Output Format (JSON):**
 {
-probable_medical_conditions: <array of maximum 1-3 conditions, easy to understand>,
-urgency: <one of these 3: high, medium, low>,
-action: <array of actions you should take, no more than 8 points. Use simple vocabulary and not longer sentences. Bold important keywords.>,
-what_to_avoid: <array of maximum 2-5 related to what to avoid>,
-common_symptoms: <array of symptoms at most 5 and at least 2>,
-precautions: <array of 2-5 precautions>,
-relevant_resources: <array of relevant links related to condition>,
+  "probable_medical_conditions": [<array of maximum 1-3 conditions, easy to understand>],
+  "urgency": <"high", "medium", or "low">,
+  "action": [<array of up to 8 actionable steps, short and concise. Highlight important words with **bold formatting**>],
+  "what_to_avoid": [<array of 2-5 points related to what to avoid>],
+  "common_symptoms": [<array of 2-5 common symptoms>],
+  "precautions": [<array of 2-5 general precautions>],
+  "relevant_resources": [<array of 2-3 trusted links related to the condition>]
 }
 
-Input: 
-Symptoms: <comma_separated_list_of_symptoms>
-Description: <user's feelings as a string>
+**Example Input:**  
+Symptoms: Chest pain, nausea, vomiting  
+Description: I'm feeling short of breath  
 
-Example Input: Symptoms: Chest pain, nausea, vomiting
-Description: I'm feeling short of breath
-
-Example Output:
+**Example Output:**  
 {
-  “probable_medical_conditions": ["Heart Attack", "Cardiac Arrest"],
-  “urgency": "High",
-  “action": [
-    "Call emergency services (100 in the US) immediately. Do not drive yourself to the hospital.",
-    "Chew and swallow an aspirin (if not allergic) while waiting for help. This can help thin your blood.",
-    "Sit down and try to remain calm. Loosen any tight clothing.",
-    "Unlock the door if alone, so emergency responders can enter easily.",
-    "Stop all activity and rest in a comfortable position, typically sitting up.",
-    "Take nitroglycerin as prescribed by your doctor, if applicable.",
-    "Perform CPR immediately if you become unconscious and stop breathing, if someone is trained to do so."
+  "probable_medical_conditions": ["Heart Attack", "Angina", "Gastroesophageal Reflux Disease (GERD)"],
+  "urgency": "High",
+  "action": [
+    "Call emergency services immediately (e.g., 911). Do not attempt to drive yourself.",
+    "Chew a full-strength **aspirin** (if not allergic) while waiting for help.",
+    "Sit upright to reduce pressure on your chest and remain calm.",
+    "Unlock doors and notify someone nearby if possible.",
+    "Stop all activity immediately and rest comfortably.",
+    "Perform CPR if unconscious and trained, or instruct someone nearby to do so."
   ],
-  “what_to_avoid": [],
-  “common_symptoms": [
-    "Chest pain/pressure",
-    "Arm, back, neck, jaw pain",
+  "what_to_avoid": [
+    "Avoid lying down flat.",
+    "Do not ignore symptoms or delay seeking help."
+  ],
+  "common_symptoms": [
+    "Chest pain or tightness",
     "Shortness of breath",
     "Cold sweat",
     "Nausea",
     "Lightheadedness"
   ],
-  “precautions": [],
-  “relevant_resources": [
-    "https://www.mayoclinic.org/first-aid/first-aid-heart-attack/basics/art-20056679",
-    "https://www.healthxchange.sg/heart-lungs/heart-attack/how-to-survive-a-heart-attack-when-alone",
-    "https://firstaidforlife.org.uk/heart-attack-on-your-own/"
+  "precautions": [
+    "Maintain a heart-healthy diet.",
+    "Exercise regularly as recommended by your doctor.",
+    "Avoid smoking and excessive alcohol consumption."
   ],
+  "relevant_resources": [
+    "https://www.mayoclinic.org/first-aid/first-aid-heart-attack/basics/art-20056679",
+    "https://www.nhs.uk/conditions/heart-attack/",
+    "https://www.heart.org/en/health-topics/heart-attack"
+  ]
+}
+
+**Input Fields:**  
+- **Symptoms**: Comma-separated list of symptoms.  
+- **Description**: Free-text description of how the user is feeling.
+
+**Ensure that:**
+- The information is concise, actionable, and fits the format.
+- Always prioritize **safety** and **urgency** in medical emergencies.
+- Use **simple language** and **clear instructions**.
 } 
   Situation: ${prompt}`,
       // prompt: `Given the following situation, analyze it and provide an output in JSON format with an urgency level (high, medium, or low) and a description. Situation: I have cough cold and high fever`,
