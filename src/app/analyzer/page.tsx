@@ -44,6 +44,16 @@ export default function Home() {
     const [isListening, setIsListening] = useState(false)
     const [analysisResult, setAnalysisResult] = useState<any>(null)
     const [isLoading, setIsLoading] = useState(false)
+    const [followUpAnswers, setFollowUpAnswers] = useState<{[key: string]: string}>({});
+    const [isAskingFollowUp, setIsAskingFollowUp] = useState(false);
+
+    const followUpQuestions: { [key: string]: string } = {
+        'Fever': 'Is your fever continuous for more than 24 hours?',
+        'Headache': 'Is the headache severe and persistent?',
+        'Chest pain': 'Is the pain radiating to your arm or jaw?',
+        'Shortness of breath': 'Does it worsen when lying down?',
+        'Cough': 'Have you been coughing for more than a week?'
+    };
 
     const toggleSymptom = (symptom: string) => {
         setSelectedSymptoms((prev) =>
@@ -92,14 +102,72 @@ export default function Home() {
         }
     }
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault()
-        setIsLoading(true)
+    const askFollowUpQuestions = async (symptoms: string[]) => {
+        setIsAskingFollowUp(true);
+        const answers: {[key: string]: string} = {};
+        
+        for (const symptom of symptoms) {
+            if (followUpQuestions[symptom]) {
+                await new Promise<void>((resolve) => {
+                    const toastId = toast(
+                        <div className="w-full">
+                            <p className="mb-2">{followUpQuestions[symptom]}</p>
+                            <div className="flex gap-2 justify-end mt-2">
+                                <Button 
+                                    size="sm" 
+                                    variant="outline"
+                                    onClick={() => {
+                                        answers[symptom] = "No";
+                                        toast.dismiss(toastId);
+                                        resolve();
+                                    }}
+                                >
+                                    No
+                                </Button>
+                                <Button 
+                                    size="sm"
+                                    onClick={() => {
+                                        answers[symptom] = "Yes";
+                                        toast.dismiss(toastId);
+                                        resolve();
+                                    }}
+                                >
+                                    Yes
+                                </Button>
+                            </div>
+                        </div>,
+                        {
+                            duration: Infinity,
+                            onDismiss: () => {
+                                if (!answers[symptom]) {
+                                    answers[symptom] = "No answer";
+                                    resolve();
+                                }
+                            },
+                        }
+                    );
+                });
+                await new Promise(resolve => setTimeout(resolve, 500));
+            }
+        }
+        setFollowUpAnswers(answers);
+        setIsAskingFollowUp(false);
+        return answers;
+    };
 
-        const prompt = `Symptoms: ${selectedSymptoms.join(
-            ', '
-        )}. Description: ${description}`
-        console.log(prompt) 
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setIsLoading(true);
+        
+        const answers = await askFollowUpQuestions(selectedSymptoms);
+        
+        const followUpInfo = Object.entries(answers)
+            .map(([symptom, answer]) => `${symptom}: ${answer}`)
+            .join('. ');
+            
+        const prompt = `Symptoms: ${selectedSymptoms.join(', ')}. 
+            Description: ${description}. 
+            Additional Information: ${followUpInfo}`;
 
         try {
             const response = await fetch('/api/cohere', {
@@ -108,29 +176,33 @@ export default function Home() {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({prompt}),
-            })
+            });
 
             if (!response.ok) {
-                throw new Error('Failed to fetch')
+                throw new Error('Failed to fetch');
             }
 
-            const data = await response.json()
-            setAnalysisResult(data)
+            const data = await response.json();
+            setAnalysisResult(data);
             
-            toast('Would you like to take a quick mental health checkup?', {
-                action: {
-                    label: 'Yes, take me there',
-                    onClick: () => router.push('/mental-health-quiz')
-                },
-                duration: 8000,
-                className: "border relative overflow-hidden"
-            })
+            setTimeout(() => {
+                toast('Would you like to take a quick mental health checkup?', {
+                    action: {
+                        label: 'Yes, take me there',
+                        onClick: () => router.push('/mental-health-quiz')
+                    },
+                    duration: 8000,
+                    className: "border relative overflow-hidden"
+                });
+            }, 2000);
         } catch (error) {
-            console.error('Error:', error)
+            console.error('Error:', error);
+            toast.error('Failed to analyze symptoms. Please try again.');
         } finally {
-            setIsLoading(false)
+            setIsLoading(false);
         }
-    }
+    };
+
     const [feedbackSubmitted, setFeedbackSubmitted] = useState(false);
     const handleFeedbackSubmit = async (feedback: any) => {
         try {
@@ -145,7 +217,9 @@ export default function Home() {
         <main className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
             <Toaster 
                 position="bottom-right" 
-                className="max-sm:!top-6 max-sm:!bottom-auto max-sm:!right-4" 
+                className="max-sm:!top-6 max-sm:!bottom-auto max-sm:!right-4"
+                closeButton
+                richColors
             />
             <div className="max-w-2xl mx-auto px-4 py-8">
             <h1 className="text-xl text-center font-mono font-bold mb-8 text-blue-600">
@@ -203,10 +277,12 @@ export default function Home() {
                             onClick={handleSubmit}
                             disabled={
                                 (selectedSymptoms.length === 0 && !description.trim()) ||
-                                isLoading
+                                isLoading ||
+                                isAskingFollowUp
                             }
                         >
-                            {isLoading ? 'Analyzing...' : 'Analyze'}
+                            {isAskingFollowUp ? 'Answering questions...' : 
+                             isLoading ? 'Analyzing...' : 'Analyze'}
                         </Button>
                     </Card>
                 </motion.div>
