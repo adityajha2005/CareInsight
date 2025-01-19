@@ -34,12 +34,59 @@ export interface AnalysisResult {
   relevant_resources: string[]
 }
 
+const translations = {
+  english: {
+    conditions: "Probable Medical Condition(s)",
+    urgencyLevel: "Urgency Level",
+    saveResult: "Save Result",
+    emergencyActions: "Emergency Actions",
+    emergencyDetected: "Emergency Situation Detected",
+    immediateAttention: "This situation requires immediate attention. Please consider the following actions:",
+    recommendedActions: "Recommended Actions",
+    whatToAvoid: "What to Avoid",
+    commonSymptoms: "Common Symptoms",
+    precautions: "Precautions",
+    relevantResources: "Relevant Resources",
+    highPriority: "High Priority",
+    mediumPriority: "Medium Priority",
+    lowPriority: "Low Priority",
+    iUnderstand: "I understand",
+    callEmergency: "Call Emergency",
+    suicidePrevention: "National Suicide Prevention Lifeline",
+    domesticViolence: "National Domestic Violence Hotline",
+    resultSaved: "Result saved successfully!"
+  },
+  hindi: {
+    conditions: "संभावित चिकित्सीय स्थिति",
+    urgencyLevel: "तात्कालिकता स्तर",
+    saveResult: "परिणाम सहेजें",
+    emergencyActions: "आपातकालीन कार्रवाई",
+    emergencyDetected: "आपातकालीन स्थिति का पता चला",
+    immediateAttention: "इस स्थिति में तत्काल ध्यान देने की आवश्यकता है। कृपया निम्नलिखित कार्रवाई पर विचार करें:",
+    recommendedActions: "अनुशंसित कार्रवाई",
+    whatToAvoid: "क्या न करें",
+    commonSymptoms: "सामान्य लक्षण",
+    precautions: "सावधानियां",
+    relevantResources: "प्रासंगिक संसाधन",
+    highPriority: "उच्च प्राथमिकता",
+    mediumPriority: "मध्यम प्राथमिकता",
+    lowPriority: "कम प्राथमिकता",
+    iUnderstand: "मैं समझता/समझती हूं",
+    callEmergency: "आपातकालीन कॉल करें",
+    suicidePrevention: "राष्ट्रीय आत्महत्या रोकथाम हेल्पलाइन",
+    domesticViolence: "राष्ट्रीय घरेलू हिंसा हेल्पलाइन",
+    resultSaved: "परिणाम सफलतापूर्वक सहेजा गया!"
+  }
+};
+
 interface AnalysisResultsProps {
   data: AnalysisResult
   showDialog: boolean
+  language?: 'english' | 'hindi'
 }
 
-export function AnalysisResults({ data, showDialog }: AnalysisResultsProps) {
+export function AnalysisResults({ data, showDialog, language = 'english' }: AnalysisResultsProps) {
+  const t = translations[language];
   const [showEmergencyDialog, setShowEmergencyDialog] = useState(false)
   const [previousUrgency, setPreviousUrgency] = useState<string | null>(null)
 
@@ -66,7 +113,7 @@ export function AnalysisResults({ data, showDialog }: AnalysisResultsProps) {
       }
       savedResults.push(newSavedResult)
       localStorage.setItem('savedResults', JSON.stringify(savedResults))
-      alert('Result saved successfully!')
+      alert(t.resultSaved)
     }
   }
 
@@ -98,17 +145,16 @@ export function AnalysisResults({ data, showDialog }: AnalysisResultsProps) {
     <>
       <Card className={`p-6 mt-6 ${getUrgencyStyles()}`}>
         <h2 className="text-xl font-semibold mb-4 flex">
-          Probable Medical Condition(s):{' '}
-          {data.probable_medical_conditions.join(', ')}
+          {t.conditions}: {data.probable_medical_conditions.join(', ')}
           <Button variant="outline" size="sm" onClick={saveResult}>
             <Save className="w-4 h-4 mr-2" />
-            Save Result
+            {t.saveResult}
           </Button>
         </h2>
 
         <div className="space-y-6">
           <div>
-            <h3 className="font-semibold mb-2">Urgency Level</h3>
+            <h3 className="font-semibold mb-2">{t.urgencyLevel}</h3>
             <Alert
               variant={
                 data.urgency === 'High'
@@ -120,7 +166,10 @@ export function AnalysisResults({ data, showDialog }: AnalysisResultsProps) {
             >
               <div className="flex items-center gap-2">
                 <AlertTriangle className="h-4 w-4" />
-                <AlertDescription>{data.urgency} Priority</AlertDescription>
+                <AlertDescription>
+                  {data.urgency === 'High' ? t.highPriority :
+                   data.urgency === 'Medium' ? t.mediumPriority : t.lowPriority}
+                </AlertDescription>
               </div>
             </Alert>
           </div>
@@ -128,23 +177,20 @@ export function AnalysisResults({ data, showDialog }: AnalysisResultsProps) {
             <Dialog>
               <DialogTrigger asChild>
                 <Button variant="destructive" className="mt-2">
-                  Emergency Actions
+                  {t.emergencyActions}
                 </Button>
               </DialogTrigger>
               <DialogContent className="bg-red-100">
                 <DialogHeader>
-                  <DialogTitle>Emergency Situation Detected</DialogTitle>
-                  <DialogDescription>
-                    This situation requires immediate attention. Please consider
-                    the following actions:
-                  </DialogDescription>
+                  <DialogTitle>{t.emergencyDetected}</DialogTitle>
+                  <DialogDescription>{t.immediateAttention}</DialogDescription>
                 </DialogHeader>
                 <div className="space-y-2">
                   <Button
                     variant="destructive"
                     onClick={() => (window.location.href = 'tel:100')}
                   >
-                    Call 100
+                    {t.callEmergency}
                   </Button>
                   <Button
                     variant="outline"
@@ -152,7 +198,7 @@ export function AnalysisResults({ data, showDialog }: AnalysisResultsProps) {
                       (window.location.href = 'tel:1-800-273-8255')
                     }
                   >
-                    National Suicide Prevention Lifeline
+                    {t.suicidePrevention}
                   </Button>
                   <Button
                     variant="outline"
@@ -160,7 +206,7 @@ export function AnalysisResults({ data, showDialog }: AnalysisResultsProps) {
                       (window.location.href = 'tel:1-800-799-7233')
                     }
                   >
-                    National Domestic Violence Hotline
+                    {t.domesticViolence}
                   </Button>
                 </div>
               </DialogContent>
@@ -168,7 +214,7 @@ export function AnalysisResults({ data, showDialog }: AnalysisResultsProps) {
           )}
 
           <div>
-            <h3 className="font-semibold mb-2">Recommended Actions</h3>
+            <h3 className="font-semibold mb-2">{t.recommendedActions}</h3>
             <ul className="list-disc pl-5 space-y-1">
               {data.action.map((action, index) => (
                 <li key={index}>{formatBoldText(action)}</li>
@@ -178,7 +224,7 @@ export function AnalysisResults({ data, showDialog }: AnalysisResultsProps) {
 
           {data.what_to_avoid && data.what_to_avoid.length > 0 && (
             <div>
-              <h3 className="font-semibold mb-2">What to Avoid</h3>
+              <h3 className="font-semibold mb-2">{t.whatToAvoid}</h3>
               <ul className="list-disc pl-5 space-y-1">
                 {data.what_to_avoid.map((precaution, index) => (
                   <li key={index}>{formatBoldText(precaution)}</li>
@@ -188,7 +234,7 @@ export function AnalysisResults({ data, showDialog }: AnalysisResultsProps) {
           )}
 
           <div>
-            <h3 className="font-semibold mb-2">Common Symptoms</h3>
+            <h3 className="font-semibold mb-2">{t.commonSymptoms}</h3>
             <ul className="list-disc pl-5 space-y-1">
               {data.common_symptoms.map((symptom, index) => (
                 <li key={index}>{formatBoldText(symptom)}</li>
@@ -198,7 +244,7 @@ export function AnalysisResults({ data, showDialog }: AnalysisResultsProps) {
 
           {data.precautions.length > 0 && (
             <div>
-              <h3 className="font-semibold mb-2">Precautions</h3>
+              <h3 className="font-semibold mb-2">{t.precautions}</h3>
               <ul className="list-disc pl-5 space-y-1">
                 {data.precautions.map((precaution, index) => (
                   <li key={index}>{formatBoldText(precaution)}</li>
@@ -208,7 +254,7 @@ export function AnalysisResults({ data, showDialog }: AnalysisResultsProps) {
           )}
 
           <div>
-            <h3 className="font-semibold mb-2">Relevant Resources</h3>
+            <h3 className="font-semibold mb-2">{t.relevantResources}</h3>
             <ul className="list-disc pl-5 space-y-1">
               {data.relevant_resources.map((resource, index) => (
                 <li key={index}>
@@ -235,12 +281,12 @@ export function AnalysisResults({ data, showDialog }: AnalysisResultsProps) {
           <AlertDialogHeader>
             <AlertDialogTitle>
               {data.urgency === 'High'
-                ? 'Emergency Situation Detected!'
-                : 'Medical Attention Required'}
+                ? t.emergencyDetected
+                : t.immediateAttention}
             </AlertDialogTitle>
             <AlertDialogDescription>
               {data.urgency === 'High'
-                ? 'This situation requires immediate attention. Please consider the following actions:'
+                ? t.immediateAttention
                 : 'Your symptoms suggest you should seek medical attention soon.'}
             </AlertDialogDescription>
           </AlertDialogHeader>
@@ -252,26 +298,25 @@ export function AnalysisResults({ data, showDialog }: AnalysisResultsProps) {
                   className="w-80"
                   onClick={() => (window.location.href = 'tel:100')}
                 >
-                  {/* <Phone className="mr-2 h-4 w-4" /> */}
-                  Call 100
+                  {t.callEmergency}
                 </Button>
                 <Button
                   variant="outline"
                   onClick={() => (window.location.href = 'tel:1-800-273-8255')}
                 >
-                  National Suicide Prevention Lifeline
+                  {t.suicidePrevention}
                 </Button>
                 <Button
                   variant="outline"
                   onClick={() => (window.location.href = 'tel:1-800-799-7233')}
                 >
-                  National Domestic Violence Hotline
+                  {t.domesticViolence}
                 </Button>
               </div>
             )}
           </AlertDialogFooter>
           <AlertDialogAction onClick={() => setShowEmergencyDialog(false)}>
-            I understand
+            {t.iUnderstand}
           </AlertDialogAction>
         </AlertDialogContent>
       </AlertDialog>

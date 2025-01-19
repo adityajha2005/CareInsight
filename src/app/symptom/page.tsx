@@ -96,7 +96,7 @@ const symptom = () => {
       <div className="container mx-auto px-4 py-12">
         <div className="max-w-3xl mx-auto">
           <div className="text-center mb-10">
-            <h1 className="text-3xl font-semibold text-gray-800 mb-2">Medical Image Analysis</h1>
+            <h1 className="text-3xl font-semibold text-gray-800 mb-2 pt-16">Medical Image Analysis</h1>
             <p className="text-gray-600">Upload your medical images for instant AI-powered analysis</p>
           </div>
           

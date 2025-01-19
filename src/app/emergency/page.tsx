@@ -44,7 +44,7 @@ const EmergencyContactsPage = () => {
   return (
       <div className="min-h-screen bg-gradient-to-b from-teal-50 to-white">
         <div className="container mx-auto md:p-8">
-          <h1 className="text-center text-2xl md:text-5xl font-mono bold text-teal-600 mb-8 md:leading-3">Indian Helplines</h1>
+          <h1 className="text-center text-2xl md:text-5xl font-mono bold text-teal-600 pt-16 mb-8 md:leading-3">Indian Helplines</h1>
           <p className="text-center text-slate-600 pb-5">Find your help here.</p>
           <motion.div initial={{y: "100%", opacity: 0, filter: "blur(10px)"}} animate={{
             y: 0,

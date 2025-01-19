@@ -83,7 +83,7 @@ const Page = () => {
         <title>Healthcare News - Stay Updated</title>
         <meta name="description" content="Latest news and articles about healthcare, medical trends, mental health, and more." />
       </Head>
-      <h1 className="text-3xl font-bold mb-8 text-center text-slate-900">Healthcare News</h1>
+      <h1 className="text-3xl font-bold pt-16 mb-8 text-center text-slate-900">Healthcare News</h1>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {news.map((article, index) => (
           <div key={index} className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 border border-slate-200">

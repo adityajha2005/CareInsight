@@ -3,8 +3,9 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Menu, X } from 'lucide-react'
+import { Menu, X, Globe } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import Image from 'next/image'
 
 const navItems = [
@@ -15,14 +16,26 @@ const navItems = [
   { name: 'Catalog', href: '/catalogue' },
 ]
 
-export function Navbar() {
+interface NavbarProps {
+  language: 'english' | 'hindi'
+  onLanguageChange: (value: 'english' | 'hindi') => void
+}
+
+export function Navbar({ language, onLanguageChange }: NavbarProps) {
   const [isOpen, setIsOpen] = useState(false)
   const pathname = usePathname()
 
+  const handleLanguageChange = (value: string | undefined) => {
+    if (!value || !onLanguageChange) return;
+    if (value === 'english' || value === 'hindi') {
+      onLanguageChange(value);
+    }
+  };
+
   return (
-    <nav className="bg-white shadow-sm border-b border-teal-100">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-sm border-b">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-20">
+        <div className="flex justify-between h-16 items-center">
           <div className="flex-shrink-0 flex items-center">
             <Link href="/" className="flex items-center space-x-3 group">
               <Image 
@@ -51,6 +64,31 @@ export function Navbar() {
                 {item.name}
               </Link>
             ))}
+          </div>
+          <div className="flex items-center gap-2">
+            <Globe className="w-4 h-4 text-blue-500" />
+            <ToggleGroup 
+              type="single" 
+              defaultValue={language}
+              value={language} 
+              onValueChange={handleLanguageChange}
+              className="border rounded-md bg-white"
+            >
+              <ToggleGroupItem 
+                value="english" 
+                aria-label="English"
+                className="data-[state=on]:bg-blue-50 data-[state=on]:text-blue-700 px-3 py-1"
+              >
+                🇬🇧 En
+              </ToggleGroupItem>
+              <ToggleGroupItem 
+                value="hindi" 
+                aria-label="Hindi"
+                className="data-[state=on]:bg-blue-50 data-[state=on]:text-blue-700 px-3 py-1"
+              >
+                🇮🇳 हि
+              </ToggleGroupItem>
+            </ToggleGroup>
           </div>
           <div className="-mr-2 flex items-center sm:hidden">
             <Button
