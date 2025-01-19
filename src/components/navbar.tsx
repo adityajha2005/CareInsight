@@ -11,6 +11,7 @@ const navItems = [
   { name: 'Analyzer', href: '/analyzer' },
   { name: 'Emergency', href: '/emergency' },
   // { name: 'Saved Results', href: '/saved' },
+  { name: 'Symptoms', href: '/symptom' },
   { name: 'Catalog', href: '/catalogue' },
 ]
 

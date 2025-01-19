@@ -41,10 +41,10 @@ const IllnessesPage: React.FC = () => {
     };
 
     return (
-        <div className="min-h-screen bg-background">
+        <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
             <div className="container mx-auto md:p-8">
-                <h1  id="#top" className="text-center text-2xl md:text-5xl font-mono bold text-primary mb-8 md:leading-3">Disease Catalogue</h1>
-                <p className="text-center pb-5">Find your resources here.</p>
+                <h1  id="#top" className="text-center text-2xl md:text-5xl font-mono bold text-blue-600 mb-8 md:leading-3">Disease Catalogue</h1>
+                <p className="text-center text-gray-600 pb-5">Find your resources here.</p>
 
                 {/* Search Bar */}
                 <div className="mb-6 flex justify-center">
@@ -53,7 +53,7 @@ const IllnessesPage: React.FC = () => {
                         placeholder="Search for an illness..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="p-2 w-1/2 rounded-md bg-input text-text"
+                        className="p-2 w-1/2 rounded-md border border-gray-200 focus:border-blue-300 focus:ring-blue-200"
                     />
                 </div>
 
@@ -64,14 +64,14 @@ const IllnessesPage: React.FC = () => {
                         {currentItems.map((illness, index) => (
                             <div
                                 key={index}
-                                className="bg-card text-text p-6 rounded-lg shadow-lg border-2 border-gray-500 w-full md:w-1/2"
+                                className="bg-white p-6 rounded-lg shadow-lg border border-gray-200 w-full md:w-1/2 hover:shadow-xl transition-shadow"
                             >
-                                <h2 className="text-2xl font-semibold text-primary text-center mb-4">{illness.name}</h2>
+                                <h2 className="text-2xl font-semibold text-blue-600 text-center mb-4">{illness.name}</h2>
 
                                 {/* Single Dropdown to Show All Sections */}
                                 <Button
                                     onClick={() => toggleCard(`${index}`)}
-                                    className="w-full text-left mb-4 p-3 bg-black hover:bg-gray-800 rounded-md text-white"
+                                    className="w-full text-left mb-4 p-3 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-md"
                                 >
                                     {openCards[`${index}`] ? 'Hide Details' : 'Show Details'}
                                 </Button>
@@ -130,6 +130,7 @@ const IllnessesPage: React.FC = () => {
                                 onClick={() => handlePageChange(currentPage - 1)}
                                 disabled={currentPage === 1}
                                 variant="outline"
+                                className="bg-blue-500 text-white hover:bg-blue-600"
                             >
                                 Previous
                             </Button>
@@ -149,6 +150,7 @@ const IllnessesPage: React.FC = () => {
                                 onClick={() => handlePageChange(currentPage + 1)}
                                 disabled={currentPage === totalPages}
                                 variant="outline"
+                                className="bg-blue-500 text-white hover:bg-blue-600"
                             >
                                 Next
                             </Button>

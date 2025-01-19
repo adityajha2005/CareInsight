@@ -142,20 +142,20 @@ export default function Home() {
       };
     
     return (
-        <main className="min-h-screen bg-gray-50">
+        <main className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
             <Toaster 
                 position="bottom-right" 
                 className="max-sm:!top-6 max-sm:!bottom-auto max-sm:!right-4" 
             />
             <div className="max-w-2xl mx-auto px-4 py-8">
-            <h1 className="text-xl text-center font-mono font-bold mb-8">
+            <h1 className="text-xl text-center font-mono font-bold mb-8 text-blue-600">
           Emergency Situation Analyzer
         </h1>
                 {/* <EmergencyAnalyzer /> */}
                 <motion.div initial={{y: "100%", opacity: 0, filter: "blur(10px)"}}
                             animate={{y: 0, opacity: 1, filter: "blur(0px)"}} transition={spring_transition}>
-                    <Card className="p-6">
-                        <h2 className="text-2xl font-semibold mb-6">
+                    <Card className="p-6 bg-white shadow-lg border border-gray-200 hover:shadow-xl transition-shadow">
+                        <h2 className="text-2xl font-semibold mb-6 text-blue-600">
                             How are you feeling today?
                         </h2>
 
@@ -166,6 +166,7 @@ export default function Home() {
                                     pressed={selectedSymptoms.includes(symptom)}
                                     onPressedChange={() => toggleSymptom(symptom)}
                                     variant="outline"
+                                    className="border-blue-200 hover:bg-blue-50 data-[state=on]:bg-blue-100"
                                 >
                                     {symptom}
                                 </Toggle>
@@ -175,7 +176,7 @@ export default function Home() {
                         <div className="relative">
                             <Textarea
                                 placeholder="Describe your medical condition or symptoms you are feeling"
-                                className="min-h-[150px] mb-4"
+                                className="min-h-[150px] mb-4 border-gray-200 focus:border-blue-300 focus:ring-blue-200"
                                 maxLength={200}
                                 value={description}
                                 onChange={(e) => setDescription(e.target.value)}
@@ -197,7 +198,7 @@ export default function Home() {
                         </div>
 
                         <Button
-                            className="w-full mt-4"
+                            className="w-full mt-4 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white"
                             size="lg"
                             onClick={handleSubmit}
                             disabled={

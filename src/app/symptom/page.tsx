@@ -32,78 +32,38 @@ const symptom = () => {
   const analyzeImage = async (base64Image: string) => {
     setLoading(true);
     try {
-      console.log("Request data:", {
-        model: "x-ai/grok-2-vision-1212",
-        temperature: 1,
-        top_p: 1,
-        messages: [
-          {
-            role: "user",
-            content: [
-              {
-                type: "text",
-                text: "Analyze this medical image..."
-              },
-              {
-                type: "image_url",
-                image_url: { url: "<PUBLIC_IMAGE_URL>" }
-              },
-              {
-                type: "text",
-                text: description
-              }
-            ]
-          }
-        ]
-      });
+      const base64Data = base64Image.split(',')[1];
+      const trimmedDescription = description.slice(0, 250); // Reduced from 500 to 250
+      
       const completion = await openai.chat.completions.create({
         model: "x-ai/grok-2-vision-1212",
         temperature: 1,
         top_p: 1,
+        max_tokens: 2000, // Reduced from 3500 to 2000
         messages: [
           {
             role: "user",
             content: [
-              {
-                type: "text",
-                text: "Analyze this medical image..."
-              },
+              { type: "text", text: "Brief medical analysis and no bold text , and start 1line about which disease is this, then 2-3 lines about it then cure:" }, 
               {
                 type: "image_url",
-                image_url: { url: "<PUBLIC_IMAGE_URL>" }
+                image_url: { url: `data:image/jpeg;base64,${base64Data}` }
               },
-              {
-                type: "text",
-                text: description
-              }
+              { type: "text", text: trimmedDescription }
             ]
           }
         ]
       });
-      console.log("Full completion response:", completion);
-  
-      const analysisResult = completion.choices?.[0]?.message?.content;
-      if (!analysisResult) {
-        console.error('Analysis result is undefined or empty. Debugging details:');
-        console.log('completion.choices:', completion.choices);
-        console.log('First choice:', completion.choices?.[0]);
-        console.log('Message in first choice:', completion.choices?.[0]?.message);
-    
-        throw new Error('No analysis results in response');
-      }
-  
-      console.log('Successfully retrieved analysis result:', analysisResult);
-  setAnalysis(analysisResult);
-} catch (error: any) {
-  if (error.response?.data?.code === 402) {
-    setAnalysis("Insufficient credits. Please visit https://openrouter.ai/credits to upgrade your plan.");
-  } else {
-    setAnalysis(`Error: ${error.message}`);
-  }
-} finally {
-  setLoading(false);
-} };
-  
+
+      setAnalysis(completion.choices?.[0]?.message?.content || 'No analysis available');
+    } catch (error: any) {
+      setAnalysis(error.response?.data?.code === 402
+        ? "Insufficient credits. Please upgrade plan at openrouter.ai/credits"
+        : `Error: ${error.message}`);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleFileUpload = (files: File[]) => {
     if (files.length > 0) {
@@ -132,52 +92,75 @@ const symptom = () => {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold mb-6">Medical Image Analysis</h1>
-      
-      <Card>
-        <CardContent className="p-6">
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div>
-              <label className="block mb-2 text-sm font-medium">
-                Describe Your Symptoms (Optional)
-              </label>
-              <Textarea
-                placeholder="Please describe your symptoms in detail..."
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                className="min-h-[120px]"
-              />
-            </div>
+    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
+      <div className="container mx-auto px-4 py-12">
+        <div className="max-w-3xl mx-auto">
+          <div className="text-center mb-10">
+            <h1 className="text-3xl font-semibold text-gray-800 mb-2">Medical Image Analysis</h1>
+            <p className="text-gray-600">Upload your medical images for instant AI-powered analysis</p>
+          </div>
+          
+          <Card className="border-0 shadow-lg">
+            <CardContent className="p-8">
+              <form onSubmit={handleSubmit} className="space-y-8">
+                <div className="space-y-4">
+                  <label className="block text-gray-700 text-sm font-medium">
+                    Describe Your Symptoms (Optional)
+                  </label>
+                  <Textarea
+                    placeholder="Please describe your symptoms in detail..."
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    className="min-h-[120px] border-gray-200 focus:border-blue-300 focus:ring-blue-200 rounded-lg transition-colors"
+                  />
+                </div>
 
-            <div>
-              <label className="block mb-2 text-sm font-medium">
-                Upload Medical Reports/X-rays
-              </label>
-              <FileUpload
-                onChange={(files) => handleFileUpload(files)}
-              />
-              {uploadStatus && (
-                <p className={`mt-2 text-sm ${uploadStatus.includes('failed') ? 'text-red-500' : 'text-green-500'}`}>
-                  {uploadStatus}
-                </p>
+                <div className="space-y-4">
+                  <label className="block text-gray-700 text-sm font-medium">
+                    Upload Medical Reports/X-rays
+                  </label>
+                  <div className="p-6 bg-blue-50 rounded-lg border-2 border-dashed border-blue-200">
+                    <FileUpload
+                      onChange={(files) => handleFileUpload(files)}
+                    />
+                  </div>
+                  {uploadStatus && (
+                    <p className={`text-sm ${uploadStatus.includes('failed') ? 'text-red-500' : 'text-emerald-600'}`}>
+                      {uploadStatus}
+                    </p>
+                  )}
+                </div>
+
+                <Button 
+                  type="submit" 
+                  className={`w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white py-3 rounded-lg transition-all duration-200 ${loading || !imageUrl ? 'opacity-70 cursor-not-allowed' : ''}`}
+                  disabled={loading || !imageUrl}
+                >
+                  {loading ? (
+                    <div className="flex items-center justify-center">
+                      <Spinner className="mr-2" />
+                      <span>Analyzing...</span>
+                    </div>
+                  ) : (
+                    'Analyze Image'
+                  )}
+                </Button>
+              </form>
+
+              {analysis && (
+                <div className="mt-8">
+                  <div className="bg-white rounded-lg border border-gray-100 p-6 shadow-sm">
+                    <h2 className="text-xl font-semibold text-gray-800 mb-4">Analysis Results</h2>
+                    <div className="prose prose-blue max-w-none">
+                      <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">{analysis}</p>
+                    </div>
+                  </div>
+                </div>
               )}
-            </div>
-
-            <Button type="submit" className="w-full" disabled={loading || !imageUrl}>
-              {loading ? <Spinner className="mr-2" /> : null}
-              Analyze Image
-            </Button>
-          </form>
-
-          {analysis && (
-            <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-              <h2 className="text-lg font-semibold mb-2">Analysis Results</h2>
-              <p className="whitespace-pre-wrap">{analysis}</p>
-            </div>
-          )}
-        </CardContent>
-      </Card>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
     </div>
   )
 }
