@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Star } from 'lucide-react';
+import Alert from '@mui/material/Alert';
+import CheckIcon from '@mui/icons-material/Check';
 
 export default function FeedbackForm({ onSubmit }: { onSubmit: (feedback: any) => void }) {
   const [rating, setRating] = useState<number | null>(null);

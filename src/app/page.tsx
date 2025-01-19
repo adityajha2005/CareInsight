@@ -1,5 +1,4 @@
 'use client'
-
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Textarea } from '@/components/ui/textarea'
@@ -10,6 +9,7 @@ import { AnalysisResults } from '@/components/analysis-results'
 import { SavedResults } from '@/components/SavedResults'
 import { motion } from 'motion/react'
 import { Alert } from '@/components/ui/alert'
+import { MentalHealthQuiz } from '@/components/MentalHealth'
 
 const spring_transition = {
   type: "spring",
@@ -124,7 +124,7 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-gray-50">
       <div className="max-w-2xl mx-auto px-4 py-8">
-       <Alert />
+       <MentalHealthQuiz />
     </div>
 </main>
   )

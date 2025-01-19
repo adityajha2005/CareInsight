@@ -1,5 +1,6 @@
 'use client'
-
+import Alert from '@mui/material/Alert';
+import CheckIcon from '@mui/icons-material/Check';
 import {Button} from '@/components/ui/button'
 import {Card} from '@/components/ui/card'
 import {Textarea} from '@/components/ui/textarea'
@@ -9,12 +10,14 @@ import {Toggle} from '@/components/ui/toggle'
 import {AnalysisResults} from '@/components/analysis-results'
 import {motion} from 'motion/react'
 import FeedbackForm from '@/components/feedback'
+import { toast, Toaster } from 'sonner'
+import { useRouter } from 'next/navigation'
+
 const spring_transition = {
     type: "spring",
-    stiffness: 200, // Controls how tight the spring is
+    stiffness: 200, 
     damping: 30,    // Controls the resistance of the spring
-    bounce: 0.5,    // Controls the amount of bounce (0 to 2 is common)
-    duration: 0.6,  // Optional, spring usually ignores this unless combined
+    bounce: 0.5,   
 }
 
 const symptoms = [
@@ -33,6 +36,7 @@ const symptoms = [
 let recognition: any = null
 
 export default function Home() {
+    const router = useRouter();
     const [selectedSymptoms, setSelectedSymptoms] = useState<string[]>([])
     const [description, setDescription] = useState(
         'I\'m having cold, cough and fever with a running nose.'
@@ -112,6 +116,15 @@ export default function Home() {
 
             const data = await response.json()
             setAnalysisResult(data)
+            
+            // Add toast after analysis is complete
+            toast('Would you like to take a quick mental health checkup?', {
+                action: {
+                    label: 'Yes, take me there',
+                    onClick: () => router.push('/mental-health-quiz')
+                },
+                duration: 8000,
+            })
         } catch (error) {
             console.error('Error:', error)
         } finally {
@@ -136,6 +149,8 @@ export default function Home() {
     
     return (
         <main className="min-h-screen bg-gray-50">
+            {/* Add Toaster component */}
+            <Toaster position="bottom-right" />
             <div className="max-w-2xl mx-auto px-4 py-8">
             <h1 className="text-xl text-center font-mono font-bold mb-8">
           Emergency Situation Analyzer
@@ -208,7 +223,8 @@ export default function Home() {
                         {!feedbackSubmitted ? (
               <FeedbackForm onSubmit={handleFeedbackSubmit} />
             ) : (
-              <p className="mt-4 text-green-600">Thank you for your feedback!</p>
+              <p className="mt-4 text-green-600">
+                <CheckIcon />{" "}Thank you for your feedback!</p>
             )}
                     </motion.div>}
             </div>

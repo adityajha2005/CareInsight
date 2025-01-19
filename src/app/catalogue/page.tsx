@@ -3,7 +3,7 @@
 import React, {useState} from 'react';
 import {Button} from "@/components/ui/button"; // Import the Button component
 import {motion} from 'motion/react'
-
+import ScrollButton from '@/components/ScrollButton';
 const spring_transition = {
     type: "spring",
     stiffness: 200, // Controls how tight the spring is
@@ -812,7 +812,7 @@ const IllnessesPage: React.FC = () => {
     return (
         <div className="min-h-screen bg-background">
             <div className="container mx-auto md:p-8">
-                <h1 className="text-center text-2xl md:text-5xl font-mono bold text-primary mb-8 md:leading-3">Disease Catalogue</h1>
+                <h1  id="#top" className="text-center text-2xl md:text-5xl font-mono bold text-primary mb-8 md:leading-3">Disease Catalogue</h1>
                 <p className="text-center pb-5">Find your resources here.</p>
 
                 {/* Search Bar */}
@@ -894,6 +894,7 @@ const IllnessesPage: React.FC = () => {
                     </div>
                 </motion.div>
             </div>
+            <ScrollButton /> {/* Move ScrollButton here, outside the container */}
         </div>
     );
 
