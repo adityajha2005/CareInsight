@@ -117,13 +117,13 @@ export default function Home() {
             const data = await response.json()
             setAnalysisResult(data)
             
-            // Add toast after analysis is complete
             toast('Would you like to take a quick mental health checkup?', {
                 action: {
                     label: 'Yes, take me there',
                     onClick: () => router.push('/mental-health-quiz')
                 },
                 duration: 8000,
+                className: "border relative overflow-hidden"
             })
         } catch (error) {
             console.error('Error:', error)
@@ -134,13 +134,7 @@ export default function Home() {
     const [feedbackSubmitted, setFeedbackSubmitted] = useState(false);
     const handleFeedbackSubmit = async (feedback: any) => {
         try {
-          await fetch('/api/feedback', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ analysisResult, feedback }),
-          });
+        // just for showing 
           setFeedbackSubmitted(true);
         } catch (error) {
           console.error('Error submitting feedback:', error);
@@ -149,8 +143,10 @@ export default function Home() {
     
     return (
         <main className="min-h-screen bg-gray-50">
-            {/* Add Toaster component */}
-            <Toaster position="bottom-right" />
+            <Toaster 
+                position="bottom-right" 
+                className="max-sm:!top-6 max-sm:!bottom-auto max-sm:!right-4" 
+            />
             <div className="max-w-2xl mx-auto px-4 py-8">
             <h1 className="text-xl text-center font-mono font-bold mb-8">
           Emergency Situation Analyzer
