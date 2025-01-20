@@ -4,6 +4,7 @@ import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import { useRouter } from "next/navigation"
 import { useCounter } from '@/hooks/useCounter'
+import { ChatBot } from '@/components/ChatBot'
 
 const features = [
   {
@@ -223,6 +224,7 @@ export default function Home() {
           </div>
         </motion.div>
       </section>
+      <ChatBot />
     </main>
   )
 }
