@@ -3,3 +3,5 @@ transformers==4.30.2
 Pillow==9.5.0
 requests==2.31.0
 numpy>=1.21.0
+cohere>=4.37
+python-dotenv>=1.0.0

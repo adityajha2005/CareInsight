@@ -69,21 +69,23 @@ const Page = () => {
     </div>
   );
 
-  if (error) return (
-    <div className="flex justify-center items-center min-h-screen">
-      <div className="text-red-500 text-center p-4 bg-red-50 rounded-lg">
-        {error}
-      </div>
-    </div>
-  );
-
   return (
     <div className="container mx-auto px-4 py-8">
-      <Head>
-        <title>Healthcare News - Stay Updated</title>
-        <meta name="description" content="Latest news and articles about healthcare, medical trends, mental health, and more." />
-      </Head>
-      <h1 className="text-3xl font-bold pt-16 mb-8 text-center text-slate-900">Healthcare News</h1>
+      {/* Beta Banner */}
+      <div className="bg-gradient-to-r from-amber-50 to-yellow-50 border border-amber-200 rounded-lg p-4 mb-8 mt-16">
+        <div className="flex items-center gap-2">
+          <span className="bg-amber-400 text-white text-xs px-2 py-1 rounded-full">BETA</span>
+          <p className="text-amber-700">
+            This feature is currently in beta. Some functionality may be limited or change without notice.
+          </p>
+        </div>
+      </div>
+
+      <h1 className="text-3xl font-bold mb-8 text-center text-slate-900">
+        Healthcare News
+        <span className="ml-2 text-sm bg-amber-100 text-amber-700 px-2 py-1 rounded-full">Beta</span>
+      </h1>
+
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {news.map((article, index) => (
           <div key={index} className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 border border-slate-200">
@@ -130,6 +132,16 @@ const Page = () => {
           Load More
         </button>
       </div>
+
+      {/* Modified error state for beta */}
+      {error && (
+        <div className="flex justify-center items-center min-h-[50vh]">
+          <div className="text-amber-700 text-center p-4 bg-amber-50 rounded-lg max-w-md">
+            <p className="mb-2">{error}</p>
+            <p className="text-sm">As this feature is in beta, you might experience occasional issues.</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

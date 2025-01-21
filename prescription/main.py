@@ -5,13 +5,20 @@ import requests
 from io import BytesIO
 import urllib.parse
 import argparse
+import os
+import cohere
+from dotenv import load_dotenv, find_dotenv
+
+load_dotenv(find_dotenv())
+
+api_key = os.getenv('COHERE_API_KEY')
+if not api_key:
+    raise ValueError("COHERE_API_KEY not found in environment variables")
 
 def load_model():
     model_name = "mjawadazad2321/donut-base-Medical_Handwritten_Prescriptions_Information_Extraction_updated"
     
-    # Check for CUDA availability
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    # print(f"Using device: {device}")
     
     tokenizer = AutoTokenizer.from_pretrained(model_name)
     model = AutoModelForImageTextToText.from_pretrained(
@@ -24,7 +31,6 @@ def load_model():
         use_fast=True  # Use fast processor as recommended
     )
     
-    # Set image size according to model config
     processor.image_processor.size = {
         "height": 960,
         "width": 720,
@@ -38,9 +44,41 @@ def is_valid_image_url(url):
     parsed_url = urllib.parse.urlparse(url)
     return parsed_url.path.lower().endswith(image_extensions)
 
+def refine_prescription_text(raw_text):
+    """Refine the extracted text using Cohere AI."""
+    try:
+        # initializing Cohere client
+        co = cohere.Client(os.getenv('COHERE_API_KEY'))
+        
+        prompt = f"""
+        As a medical professional, analyze and structure this prescription text:
+        {raw_text}
+        
+        Please format the response as follows:
+        1. Patient Information (if available)
+        2. Medications with dosage and frequency
+        3. Special Instructions
+        4. Doctor's Information (if available)
+        
+        Make it clear and easy to read. If any part is unclear, mention it.
+        """
+        
+        response = co.generate(
+            prompt=prompt,
+            max_tokens=500,
+            temperature=0.7,
+            k=0,
+            stop_sequences=[],
+            return_likelihoods='NONE'
+        )
+        
+        return response.generations[0].text.strip()
+    except Exception as e:
+        print(f"Cohere refinement failed: {str(e)}")
+        return raw_text  # Return original text if refinement fails
+
 def process_prescription(image_path, tokenizer, model, processor, device):
     try:
-        # Check if the image_path is a URL
         if image_path.startswith(('http://', 'https://')):
             if not is_valid_image_url(image_path):
                 raise ValueError("URL does not point to a supported image file")
@@ -58,10 +96,9 @@ def process_prescription(image_path, tokenizer, model, processor, device):
         pixel_values = processor(image, return_tensors="pt").pixel_values
         pixel_values = pixel_values.to(device)  # Move input to same device as model
 
-        # Generate text from image
         task_prompt = "<extract_text>"
         decoder_input_ids = tokenizer(task_prompt, add_special_tokens=False, return_tensors="pt").input_ids
-        decoder_input_ids = decoder_input_ids.to(device)  # Move input to same device as model
+        decoder_input_ids = decoder_input_ids.to(device)  
 
         with torch.no_grad():  # Disable gradient calculation for inference
             outputs = model.generate(
@@ -79,15 +116,15 @@ def process_prescription(image_path, tokenizer, model, processor, device):
                 return_dict_in_generate=True,
             )
 
-        # Decode the generated text
         prediction = tokenizer.batch_decode(outputs.sequences, skip_special_tokens=True)[0]
         
-        # Clean up the prediction
         prediction = prediction.strip()
         if prediction.startswith('<extract_text>'):
             prediction = prediction[len('<extract_text>'):].strip()
+        
+        refined_prediction = refine_prescription_text(prediction)
+        return refined_prediction
             
-        return prediction
     except ValueError as e:
         raise ValueError(f"Invalid input: {str(e)}")
     except Exception as e:
