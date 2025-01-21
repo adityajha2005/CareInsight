@@ -14,6 +14,7 @@ const navItems = [
   // { name: 'Saved Results', href: '/saved' },
   { name: 'Symptoms', href: '/symptom' },
   { name: 'Catalog', href: '/catalogue' },
+  { name: 'Prescription', href: '/prescription' },
 ]
 
 interface NavbarProps {

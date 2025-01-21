@@ -11,7 +11,7 @@ def load_model():
     
     # Check for CUDA availability
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    print(f"Using device: {device}")
+    # print(f"Using device: {device}")
     
     tokenizer = AutoTokenizer.from_pretrained(model_name)
     model = AutoModelForImageTextToText.from_pretrained(
@@ -110,9 +110,11 @@ def main():
         result = process_prescription(image_path, tokenizer, model, processor, device)
         
         if not result:
+            print(" ")
             print("Warning: No text was extracted from the image")
         else:
-            print("\nExtracted Text:")
+            print("")
+            print("Generating Response")
             print("-" * 50)
             print(result)
             print("-" * 50)
