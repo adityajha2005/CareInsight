@@ -45,6 +45,22 @@ export default function PrescriptionPage() {
           <p className="text-sm sm:text-base text-gray-600">Upload a prescription image to extract information</p>
         </div>
 
+        {/* Beta Warning Banner */}
+        <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-6 rounded-md">
+          <div className="flex items-center">
+            <div className="flex-shrink-0">
+              <svg className="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495zM10 6a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 6zm0 9a1 1 0 100-2 1 1 0 000 2z" clipRule="evenodd" />
+              </svg>
+            </div>
+            <div className="ml-3">
+              <p className="text-sm text-yellow-700">
+                <strong className="font-medium">Beta Version Notice:</strong> This prescription analysis tool is currently in beta testing. The AI model may require further refinement and results should be verified. Always consult with your healthcare provider before making any medical decisions.
+              </p>
+            </div>
+          </div>
+        </div>
+
         {/* Main Card */}
         <div className="bg-white rounded-lg shadow-lg p-4 sm:p-6 md:p-8">
           <div className="space-y-4 sm:space-y-6">

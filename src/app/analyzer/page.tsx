@@ -307,8 +307,8 @@ export default function Home() {
                 closeButton
                 richColors
             />
-            <div className="max-w-2xl mx-auto px-4 py-8 mt-16"> 
-                <h1 className="text-xl text-center font-mono font-bold mb-8 text-blue-600">
+            <div className="max-w-2xl mx-auto px-4 py-8 mt-12"> 
+                <h1 className="text-center text-2xl md:text-4xl font-mono bold text-teal-600 pt-16 mb-8 md:leading-3">
                     {t.title}
                 </h1>
                 <motion.div initial={{y: "100%", opacity: 0, filter: "blur(10px)"}}

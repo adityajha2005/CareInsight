@@ -75,9 +75,9 @@ const IllnessesPage: React.FC = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
+        <div className="min-h-screen mt-12 bg-gradient-to-b from-blue-50 to-white">
             <div className="container mx-auto px-4 md:p-8">
-                <h1 id="#top" className="pt-8 md:pt-16 text-xl sm:text-2xl md:text-5xl font-mono bold text-blue-600 mb-4 md:mb-8 md:leading-3">
+                <h1 id="#top" className="text-center pt-8 md:pt-16 text-xl sm:text-2xl md:text-5xl font-mono bold text-blue-600 mb-4 md:mb-8 md:leading-3">
                     Disease Catalogue
                 </h1>
                 <p className="text-center text-sm md:text-base text-gray-600 pb-3 md:pb-5">Find your resources here.</p>
