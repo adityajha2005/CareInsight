@@ -1,7 +1,7 @@
 'use client';
-
 import { useState } from 'react';
 import Image from 'next/image';
+import { motion } from 'framer-motion';
 
 export default function PrescriptionPage() {
   const [imageUrl, setImageUrl] = useState('');
@@ -38,15 +38,23 @@ export default function PrescriptionPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 py-4 mt-[9vh] sm:py-8 px-2 sm:px-6 lg:px-8">
-      <div className="max-w-4xl mx-auto ">
-        {/* Header */}
-        <div className="text-center mb-4 sm:mb-8">
+      <div className="max-w-4xl mx-auto">
+        <motion.div
+          initial={{ y: -20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.5 }}
+          className="text-center mb-4 sm:mb-8"
+        >
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Prescription Analysis</h1>
           <p className="text-sm sm:text-base text-gray-600">Upload a prescription image to extract information</p>
-        </div>
+        </motion.div>
 
-        {/* Beta Warning Banner */}
-        <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-6 rounded-md">
+        <motion.div
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+          className="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-6 rounded-md"
+        >
           <div className="flex items-center">
             <div className="flex-shrink-0">
               <svg className="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
@@ -55,16 +63,22 @@ export default function PrescriptionPage() {
             </div>
             <div className="ml-3">
               <p className="text-sm text-yellow-700">
-                <strong className="font-medium">Beta Version Notice:</strong> This prescription analysis tool is currently in beta testing. The AI model may require further refinement and results should be verified. Always consult with your healthcare provider before making any medical decisions.
+                <strong className="font-medium">Important Notice:</strong> This prescription analysis tool is in beta testing 
+                and is provided for demonstration purposes only. The AI model's results may be inaccurate or incomplete. 
+                Do not use this tool for medical decisions. Always consult qualified healthcare professionals and rely on 
+                official prescription documents for medical information.
               </p>
             </div>
           </div>
-        </div>
+        </motion.div>
 
-        {/* Main Card */}
-        <div className="bg-white rounded-lg shadow-lg p-4 sm:p-6 md:p-8">
+        <motion.div
+          initial={{ scale: 0.95, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className="bg-white rounded-lg shadow-lg p-4 sm:p-6 md:p-8"
+        >
           <div className="space-y-4 sm:space-y-6">
-            {/* Input Section */}
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -102,39 +116,41 @@ export default function PrescriptionPage() {
                 </div>
               )}
             </div>
+          </div>
+        </motion.div>
 
-            {/* Preview and Results Grid */}
-            {(imageUrl || result) && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
-                {/* Image Preview */}
-                {imageUrl && (
-                  <div className="space-y-2">
-                    <h3 className="text-base sm:text-lg font-medium text-gray-900">Image Preview</h3>
-                    <div className="relative w-full h-[200px] sm:h-[300px] md:h-[400px] rounded-lg overflow-hidden border border-gray-200">
-                      <Image
-                        src={imageUrl}
-                        alt="Prescription"
-                        fill
-                        className="object-contain"
-                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                      />
-                    </div>
-                  </div>
-                )}
-
-                {/* Results Section */}
-                {result && (
-                  <div className="space-y-2">
-                    <h3 className="text-base sm:text-lg font-medium text-gray-900">Analysis Results</h3>
-                    <div className="bg-gray-50 rounded-lg p-3 sm:p-4 border border-gray-200">
-                      <pre className="whitespace-pre-wrap text-xs sm:text-sm text-gray-700 overflow-auto max-h-[400px]">{result}</pre>
-                    </div>
-                  </div>
-                )}
+        {(imageUrl || result) && (
+          <motion.div
+            initial={{ y: 40, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ type: "spring", stiffness: 100, damping: 20 }}
+            className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 mt-6"
+          >
+            {imageUrl && (
+              <div className="space-y-2">
+                <h3 className="text-base sm:text-lg font-medium text-gray-900">Image Preview</h3>
+                <div className="relative w-full h-[200px] sm:h-[300px] md:h-[400px] rounded-lg overflow-hidden border border-gray-200">
+                  <Image
+                    src={imageUrl}
+                    alt="Prescription"
+                    fill
+                    className="object-contain"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  />
+                </div>
               </div>
             )}
-          </div>
-        </div>
+
+            {result && (
+              <div className="space-y-2">
+                <h3 className="text-base sm:text-lg font-medium text-gray-900">Analysis Results</h3>
+                <div className="bg-gray-50 rounded-lg p-3 sm:p-4 border border-gray-200">
+                  <pre className="whitespace-pre-wrap text-xs sm:text-sm text-gray-700 overflow-auto max-h-[400px]">{result}</pre>
+                </div>
+              </div>
+            )}
+          </motion.div>
+        )}
       </div>
     </div>
   );

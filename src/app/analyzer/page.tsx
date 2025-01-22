@@ -296,7 +296,7 @@ export default function Home() {
       };
     
     return (
-        <main className="min-h-screen bg-gradient-to-b from-blue-50 to-white relative">
+        <main className="min-h-screen bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-blue-100 via-white to-blue-50 mt-[9vh]">
             <Navbar 
                 language={language} 
                 onLanguageChange={handleLanguageChange} 
@@ -307,92 +307,120 @@ export default function Home() {
                 closeButton
                 richColors
             />
-            <div className="max-w-2xl mx-auto px-4 py-8 mt-12"> 
-                <h1 className="text-center text-2xl md:text-4xl font-mono bold text-teal-600 pt-16 mb-8 md:leading-3">
-                    {t.title}
-                </h1>
-                <motion.div initial={{y: "100%", opacity: 0, filter: "blur(10px)"}}
-                            animate={{y: 0, opacity: 1, filter: "blur(0px)"}} transition={spring_transition}>
-                    <Card className="p-6 bg-white shadow-lg border border-gray-200 hover:shadow-xl transition-shadow">
-                        <h2 className="text-2xl font-semibold mb-6 text-blue-600">
-                            {t.subtitle}
-                        </h2>
-
-                        <div className="flex flex-wrap gap-2 mb-6">
-                            {symptoms[language].map((symptom, index) => (
-                                <Toggle
-                                    key={symptom}
-                                    pressed={selectedSymptoms.includes(
-                                        language === 'hindi' 
-                                            ? Object.keys(symptomMap).find(key => symptomMap[key as keyof typeof symptomMap] === symptom) || symptom
-                                            : symptom
-                                    )}
-                                    onPressedChange={() => toggleSymptom(symptom)}
-                                    variant="outline"
-                                    className="border-blue-200 hover:bg-blue-50 data-[state=on]:bg-blue-100"
-                                >
-                                    {symptom}
-                                </Toggle>
-                            ))}
-                        </div>
-
-                        <div className="relative">
-                            <Textarea
-                                placeholder={t.placeholder}
-                                className="min-h-[150px] mb-4 border-gray-200 focus:border-blue-300 focus:ring-blue-200"
-                                maxLength={200}
-                                value={description}
-                                onChange={(e) => setDescription(e.target.value)}
-                            />
-                            <p className="text-xs my-5 w-[65%] md:w-full md:text-sm leading-3 text-gray-400">
-                                {t.disclaimer}
-                            </p>
-                            <Button
-                                size="icon"
-                                variant={isListening ? 'destructive' : 'outline'}
-                                className="absolute bottom-8 right-2"
-                                onClick={handleVoiceInput}
-                            >
-                                <Mic className={isListening ? 'animate-pulse' : ''}/>
-                            </Button>
-                            <div className="text-sm text-muted-foreground text-right">
-                                {description.length}/200 characters
-                            </div>
-                        </div>
-
-                        <Button
-                            className="w-full mt-4 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white"
-                            size="lg"
-                            onClick={handleSubmit}
-                            disabled={
-                                (selectedSymptoms.length === 0 && !description.trim()) ||
-                                isLoading ||
-                                isAskingFollowUp
-                            }
-                        >
-                            {isAskingFollowUp ? t.answering : 
-                             isLoading ? t.analyzing : t.analyzeButton}
-                        </Button>
-                    </Card>
-                </motion.div>
-                {analysisResult &&
-                    <motion.div
-                        initial={{y: "100%", opacity: 0, filter: "blur(10px)"}}
-                        animate={{y: 0, opacity: 1, filter: "blur(0px)"}}
-                        transition={spring_transition}
+            <div className="container mx-auto px-4 py-12">
+                <div className="max-w-3xl mx-auto">
+                    <h1 className="text-center text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-700 to-blue-900 mb-2">
+                        {t.title}
+                    </h1>
+                    <p className="text-center text-gray-600 font-inter mb-8">{t.subtitle}</p>
+                    <motion.div 
+                        initial={{y: 20, opacity: 0}} 
+                        animate={{y: 0, opacity: 1}} 
+                        transition={{type: "spring", stiffness: 100, damping: 20}}
                     >
-                        <AnalysisResults 
-                            data={analysisResult} 
-                            showDialog={false}
-                            language={language}
-                        />
-                        {!feedbackSubmitted ? (
-              <FeedbackForm onSubmit={handleFeedbackSubmit} />
-            ) : (
-              <p className="mt-4 text-green-600">
-                <CheckIcon />{" "}Thank you for your feedback!</p>
-            )}
-                    </motion.div>}
+                        <Card className="relative p-8 bg-white/80 backdrop-blur-xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] 
+                                     border border-white/20 rounded-3xl overflow-hidden">
+                            <div className="absolute inset-0 bg-gradient-to-br from-blue-50/50 to-transparent pointer-events-none" />
+                            <div className="absolute -top-24 -right-24 w-48 h-48 bg-blue-500/10 rounded-full blur-3xl" />
+                            <div className="absolute -bottom-24 -left-24 w-48 h-48 bg-indigo-500/10 rounded-full blur-3xl" />
+                            
+                            <div className="relative">
+                                <h2 className="text-2xl font-semibold mb-8 text-blue-800">
+                                    {t.subtitle}
+                                </h2>
+
+                                <div className="flex flex-wrap gap-2 mb-8">
+                                    {symptoms[language].map((symptom, index) => (
+                                        <Toggle
+                                            key={symptom}
+                                            pressed={selectedSymptoms.includes(
+                                                language === 'hindi' 
+                                                    ? Object.keys(symptomMap).find(key => symptomMap[key as keyof typeof symptomMap] === symptom) || symptom
+                                                    : symptom
+                                            )}
+                                            onPressedChange={() => toggleSymptom(symptom)}
+                                            variant="outline"
+                                            className="px-4 py-2 rounded-full border-2 border-blue-100 hover:border-blue-300
+                                                     data-[state=on]:bg-blue-600 data-[state=on]:text-white data-[state=on]:border-blue-600
+                                                     transition-all duration-300 ease-in-out transform hover:scale-105
+                                                     shadow-sm hover:shadow-md active:scale-95"
+                                        >
+                                            {symptom}
+                                        </Toggle>
+                                    ))}
+                                </div>
+
+                                <div className="relative">
+                                    <Textarea
+                                        placeholder={t.placeholder}
+                                        className="min-h-[150px] mb-6 rounded-2xl border-2 border-blue-100 
+                                                 focus:border-blue-400 focus:ring-blue-200 bg-white/90 
+                                                 backdrop-blur-sm shadow-inner p-6 text-lg"
+                                        maxLength={200}
+                                        value={description}
+                                        onChange={(e) => setDescription(e.target.value)}
+                                    />
+                                    <Button
+                                        size="icon"
+                                        variant={isListening ? 'destructive' : 'outline'}
+                                        className="absolute bottom-20 right-3 rounded-full w-14 h-14 
+                                                 hover:shadow-lg transition-all duration-300 bg-white
+                                                 border-2 border-blue-100 hover:border-blue-300"
+                                        onClick={handleVoiceInput}
+                                    >
+                                        <Mic className={`${isListening ? 'animate-pulse text-red-500' : 'text-blue-600'} w-6 h-6`}/>
+                                    </Button>
+                                    <div className="flex justify-between items-center mb-6">
+                                        <p className="text-sm text-gray-500">
+                                            {t.disclaimer}
+                                        </p>
+                                        <span className="text-sm text-gray-400">
+                                            {description.length}/200
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <Button
+                                    className={`w-full py-6 text-lg font-medium rounded-2xl transition-all duration-300
+                                             ${isLoading ? 'animate-pulse' : ''}
+                                             bg-gradient-to-r from-blue-600 via-blue-700 to-blue-600 
+                                             hover:from-blue-700 hover:via-blue-800 hover:to-blue-700
+                                             text-white shadow-lg hover:shadow-xl 
+                                             active:scale-[0.99]`}
+                                    onClick={handleSubmit}
+                                    disabled={
+                                        (selectedSymptoms.length === 0 && !description.trim()) ||
+                                        isLoading ||
+                                        isAskingFollowUp
+                                    }
+                                >
+                                    {isAskingFollowUp ? t.answering : 
+                                     isLoading ? t.analyzing : t.analyzeButton}
+                                </Button>
+                            </div>
+                        </Card>
+                    </motion.div>
+                    
+                    {analysisResult && (
+                        <motion.div
+                            initial={{y: 40, opacity: 0}}
+                            animate={{y: 0, opacity: 1}}
+                            transition={{type: "spring", stiffness: 100, damping: 20}}
+                        >
+                            <AnalysisResults 
+                                data={analysisResult} 
+                                showDialog={false}
+                                language={language}
+                            />
+                            {!feedbackSubmitted ? (
+                  <FeedbackForm onSubmit={handleFeedbackSubmit} />
+                ) : (
+                  <p className="mt-4 text-green-600">
+                    <CheckIcon />{" "}Thank you for your feedback!</p>
+                )}
+                        </motion.div>
+                    )}
+                </div>
             </div>
         </main>
     )

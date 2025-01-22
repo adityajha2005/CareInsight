@@ -57,31 +57,31 @@ export function SavedResults() {
   }
 
   return (
-    <Card className="w-full mt-8">
+    <Card className="border-0 shadow-lg">
       <CardHeader>
-        <CardTitle>Saved Results</CardTitle>
+        <CardTitle className="text-xl font-semibold text-gray-800">Saved Results</CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="p-8">
         <div className="space-y-4">
           {savedResults.map((result) => (
             <Card
               key={result.id}
-              className="p-4"
+              className="border border-gray-100 shadow-sm p-6 hover:shadow-md transition-shadow duration-200"
               onClick={() => toggleExpand(result.id)}
             >
               <div className="flex items-center justify-between mb-2">
-                <h3 className="font-semibold text-lg">
+                <h3 className="font-semibold text-lg text-gray-800">
                   {result.probable_medical_conditions.join(', ')}
                 </h3>
                 <div className="flex items-center gap-2">
                   {getUrgencyIcon(result.urgency)}
-                  <span className="text-sm font-medium capitalize">
+                  <span className="text-sm font-medium capitalize text-gray-600">
                     {result.urgency} Urgency
                   </span>
                   {expandedId === result.id ? (
-                    <ChevronUp className="w-4 h-4" />
+                    <ChevronUp className="w-4 h-4 text-gray-500" />
                   ) : (
-                    <ChevronDown className="w-4 h-4" />
+                    <ChevronDown className="w-4 h-4 text-gray-500" />
                   )}
                 </div>
               </div>
@@ -89,36 +89,15 @@ export function SavedResults() {
                 {new Date(result.timestamp).toLocaleString()}
               </p>
               {expandedId === result.id && (
-                <div className="mt-4 space-y-2">
+                <div className="mt-4 space-y-4 bg-blue-50 rounded-lg p-4">
                   <AnalysisResults data={result} showDialog={false} />
-                  {/* <p>
-                    <strong>Actions:</strong> {result.action.join(', ')}
-                  </p>
-                  {result.what_to_avoid && (
-                    <p>
-                      <strong>What to avoid:</strong>{' '}
-                      {result.what_to_avoid.join(', ')}
-                    </p>
-                  )}
-                  <p>
-                    <strong>Common symptoms:</strong>{' '}
-                    {result.common_symptoms.join(', ')}
-                  </p>
-                  <p>
-                    <strong>Precautions:</strong>{' '}
-                    {result.precautions.join(', ')}
-                  </p>
-                  <p>
-                    <strong>Relevant resources:</strong>{' '}
-                    {result.relevant_resources.join(', ')}
-                  </p> */}
                 </div>
               )}
               <Button
                 variant="outline"
                 size="sm"
                 onClick={(e) => deleteResult(result.id, e)}
-                className="mt-2"
+                className="mt-4 text-red-500 hover:text-red-600 hover:bg-red-50 transition-colors duration-200"
               >
                 <Trash2 className="w-4 h-4 mr-2" />
                 Delete
