@@ -36,7 +36,7 @@ const latestNews: HealthNews[] = [
     description: 'Researchers discover new approach to treating anxiety and depression.',
     category: 'Research',
     date: '2024-01-14',
-    image: 'https://images.unsplash.com/photo-1559757175-7b21e5c381d3?w=800',
+    image: 'https://vinbrain.net/public/uploads/1blog/ai-tam-ly/222.jpg',
     readTime: '4 min'
   },
   {
