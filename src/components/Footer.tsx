@@ -55,13 +55,13 @@ const Footer: React.FC = () => {
                             {description}
                         </p>
                         <div className="flex gap-3">
-                            <a href="#" className="text-gray-600 hover:text-blue-600 transition-colors">
+                            <a href="https://x.com/adxtya_jha/" className="text-gray-600 hover:text-blue-600 transition-colors">
                                 <TwitterLogo size={24} weight="fill" />
                             </a>
-                            <a href="#" className="text-gray-600 hover:text-blue-600 transition-colors">
+                            <a href="https://www.linkedin.com/in/aditya-jha-654800280/" className="text-gray-600 hover:text-blue-600 transition-colors">
                                 <LinkedinLogo size={24} weight="fill" />
                             </a>
-                            <a href="#" className="text-gray-600 hover:text-blue-600 transition-colors">
+                            <a href="mailto:2005akjha@gmail.com" className="text-gray-600 hover:text-blue-600 transition-colors">
                                 <EnvelopeSimple size={24} weight="fill" />
                             </a>
                         </div>
