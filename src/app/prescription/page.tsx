@@ -38,7 +38,7 @@ export default function PrescriptionPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 py-4 mt-[9vh] sm:py-8 px-2 sm:px-6 lg:px-8">
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-4xl mx-auto ">
         {/* Header */}
         <div className="text-center mb-4 sm:mb-8">
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Prescription Analysis</h1>
