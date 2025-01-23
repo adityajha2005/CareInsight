@@ -3,21 +3,26 @@ import { motion } from 'framer-motion';
 import { SavedResults } from '@/components/SavedResults';
 import { SignInButton } from '@clerk/nextjs';
 import { useAuth } from '@clerk/nextjs';
+import { redirect } from 'next/navigation';
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function Page() {
-  const { isSignedIn } = useAuth(); // Client-side hook to check if the user is signed in
-  
-  if (!isSignedIn) {
-    return (
-      <div>
-        <h1>You need to sign in to access this page</h1>
-        <SignInButton /> {/* Or you can redirect them to sign-in */}
-      </div>
-    );
+  const { isLoaded, isSignedIn } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (isLoaded && !isSignedIn) {
+      router.replace('/sign-in');
+    }
+  }, [isLoaded, isSignedIn, router]);
+
+  if (!isLoaded || !isSignedIn) {
+    return null; // or a small spinner
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white mt-[9vh]">
+    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white ">
       <div className="container mx-auto px-4 py-12">
         <div className="max-w-3xl mx-auto">
           <motion.div 

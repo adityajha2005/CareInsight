@@ -11,7 +11,7 @@ const fadeIn = {
 
 export default function About() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 via-white to-blue-50 py-16 px-4 sm:px-6 lg:px-8 mt-[9vh]">
+    <div className="min-h-screen bg-gradient-to-b from-blue-50 via-white to-blue-50 py-16 px-4 sm:px-6 lg:px-8 ">
       <div className="max-w-5xl mx-auto">
         {/* Hero Section */}
         <motion.div 

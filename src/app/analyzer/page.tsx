@@ -296,7 +296,7 @@ export default function Home() {
       };
     
     return (
-        <main className="min-h-screen bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-blue-100 via-white to-blue-50 mt-[9vh]">
+        <main className="min-h-screen bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-blue-100 via-white to-blue-50 ">
             <Navbar 
                 language={language} 
                 onLanguageChange={handleLanguageChange} 

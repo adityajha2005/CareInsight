@@ -1,14 +1,28 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
-
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@clerk/nextjs';
 export default function PrescriptionPage() {
+  
   const [imageUrl, setImageUrl] = useState('');
   const [result, setResult] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
+  const { isLoaded, isSignedIn } = useAuth();
+    const router = useRouter();
+  
+    useEffect(() => {
+      if (isLoaded && !isSignedIn) {
+        router.replace('/sign-in');
+      }
+    }, [isLoaded, isSignedIn, router]);
+  
+    if (!isLoaded || !isSignedIn) {
+      return null; // or a small spinner
+    }
   const handleSubmit = async () => {
     if (!imageUrl) {
       setError('Please enter an image URL');
@@ -37,7 +51,7 @@ export default function PrescriptionPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-4 mt-[9vh] sm:py-8 px-2 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gray-50 py-4  sm:py-8 px-2 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
         <motion.div
           initial={{ y: -20, opacity: 0 }}

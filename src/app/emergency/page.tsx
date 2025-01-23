@@ -42,7 +42,7 @@ const PhoneButton = ({ number }: { number: string }) => {
 
 const EmergencyContactsPage = () => {
   return (
-      <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white mt-[9vh]">
+      <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white ">
         <div className="container mx-auto px-4 py-12">
           <h1 className="text-center text-3xl font-semibold text-gray-800 mb-2">Indian Helplines</h1>
           <p className="text-center text-gray-600 font-inter pb-5">Find your help here.</p>

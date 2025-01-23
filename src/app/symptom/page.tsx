@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from 'react'
+import React, { useState , useEffect} from 'react'
 import OpenAI from "openai"
 import { FileUpload } from '@/components/ui/file-upload'
 import { Input } from '@/components/ui/input'
@@ -12,6 +12,9 @@ import {
 } from '@/components/ui/card'
 import { Spinner } from '@/components/ui/spinner'
 import { motion } from 'framer-motion'
+// import { useauth } from '@clerk/nextjs/server'
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@clerk/nextjs'
 
 const openai = new OpenAI({
   baseURL: "https://openrouter.ai/api/v1",
@@ -29,6 +32,18 @@ const symptom = () => {
   const [loading, setLoading] = useState(false)
   const [analysis, setAnalysis] = useState('')
   const [imageUrl, setImageUrl] = useState('')
+  const { isLoaded, isSignedIn } = useAuth();
+    const router = useRouter();
+  
+    useEffect(() => {
+      if (isLoaded && !isSignedIn) {
+        router.replace('/sign-in');
+      }
+    }, [isLoaded, isSignedIn, router]);
+  
+    if (!isLoaded || !isSignedIn) {
+      return null; // or a small spinner
+    }
   
   const analyzeImage = async (base64Image: string) => {
     setLoading(true);
@@ -93,7 +108,7 @@ const symptom = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white mt-[9vh]">
+    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white ">
       <div className="container mx-auto px-4 py-12">
         <div className="max-w-3xl mx-auto">
           <motion.div 
