@@ -42,7 +42,8 @@ export function Navbar({ language, onLanguageChange }: NavbarProps) {
               <Image 
                 width={100} 
                 height={100} 
-                src="./logo.png" 
+                // src="./logo.png"
+                src="/stock_1.jpg" 
                 alt="logo" 
                 className="h-8 w-8 transition-transform duration-200 group-hover:scale-110" 
               />

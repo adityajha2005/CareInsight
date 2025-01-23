@@ -13,6 +13,7 @@
     "@ai-sdk/google": "^1.0.15",
     "@ai-sdk/google-vertex": "^2.0.16",
     "@ai-sdk/openai-compatible": "^0.0.16",
+    "@clerk/nextjs": "^6.10.0",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
     "@fingerprintjs/fingerprintjs": "^3.4.0",

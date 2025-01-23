@@ -1,12 +1,8 @@
-import type { NextConfig } from 'next'
-
-const nextConfig: NextConfig = {
-  /* config options here */
-  output: 'export',
-  eslint: {
-    ignoreDuringBuilds: true,
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  images: {
+    domains: ['images.unsplash.com', 'vinbrain.net'], // Add vinbrain.net here
   },
-  images: { unoptimized: true },
-}
+};
 
-export default nextConfig
+module.exports = nextConfig;

@@ -1,8 +1,21 @@
-'use client'
-import { motion } from 'framer-motion'
-import { SavedResults } from '@/components/SavedResults'
+'use client';
+import { motion } from 'framer-motion';
+import { SavedResults } from '@/components/SavedResults';
+import { SignInButton } from '@clerk/nextjs';
+import { useAuth } from '@clerk/nextjs';
 
-export default function page() {
+export default function Page() {
+  const { isSignedIn } = useAuth(); // Client-side hook to check if the user is signed in
+  
+  if (!isSignedIn) {
+    return (
+      <div>
+        <h1>You need to sign in to access this page</h1>
+        <SignInButton /> {/* Or you can redirect them to sign-in */}
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white mt-[9vh]">
       <div className="container mx-auto px-4 py-12">
@@ -27,5 +40,5 @@ export default function page() {
         </div>
       </div>
     </div>
-  )
+  );
 }
