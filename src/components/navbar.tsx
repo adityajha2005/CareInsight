@@ -6,8 +6,7 @@ import { usePathname } from 'next/navigation'
 import { Menu, X, Globe } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
-import Image from 'next/image'
-import { SignInButton } from '@clerk/nextjs'
+import { SignedIn, SignedOut, SignInButton, UserButton } from '@clerk/nextjs' // Added missing imports
 
 const navItems = [
   { name: 'Analyzer', href: '/analyzer' },
@@ -81,14 +80,30 @@ export function Navbar({ language, onLanguageChange }: NavbarProps) {
               🇮🇳 हि
             </ToggleGroupItem>
           </ToggleGroup>
-          <SignInButton>
-            <Button 
-              variant="outline"
-              className="bg-white/50 hover:bg-teal-50 text-teal-700 border-teal-200 hover:border-teal-300 transition-colors duration-200"
-            >
-              Sign In
-            </Button>
-          </SignInButton>
+
+          {/* Authentication Section */}
+          <SignedOut>
+            <SignInButton>
+              <Button 
+                variant="outline"
+                className="bg-white/50 hover:bg-teal-50 text-teal-700 border-teal-200 hover:border-teal-300 transition-colors duration-200"
+              >
+                Sign In
+              </Button>
+            </SignInButton>
+          </SignedOut>
+          <SignedIn>
+            <UserButton 
+              afterSignOutUrl="/"
+              appearance={{
+                elements: {
+                  userButtonAvatarBox: "h-8 w-8",
+                  userButtonPopoverCard: "shadow-lg border"
+                }
+              }}
+            />
+          </SignedIn>
+
           <Button
             variant="ghost"
             size="icon"
@@ -105,6 +120,7 @@ export function Navbar({ language, onLanguageChange }: NavbarProps) {
         </div>
       </div>
 
+      {/* Mobile menu dropdown remains the same */}
       {isOpen && (
         <div className="absolute right-0 mt-1 w-56 bg-white rounded-md shadow-lg border overflow-hidden navbar-dropdown">
           <div className="py-1">

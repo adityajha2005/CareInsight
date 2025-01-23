@@ -6,7 +6,7 @@ import { useAuth } from '@clerk/nextjs';
 import { redirect } from 'next/navigation';
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-
+import { Redirect } from 'next';
 export default function Page() {
   const { isLoaded, isSignedIn } = useAuth();
   const router = useRouter();

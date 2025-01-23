@@ -6,6 +6,7 @@ import { Navbar } from '@/components/navbar'
 import { ThemeProvider } from 'next-themes'
 import Footer from '@/components/Footer'
 import { ClerkProvider, SignInButton, SignedIn, SignedOut, UserButton } from '@clerk/nextjs'
+import { NavbarWrapper } from '@/components/navbar-wrapper'
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -33,15 +34,18 @@ export default function RootLayout({
     <ClerkProvider>
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} antialiased`} 
       >
-         <SignedOut>
+         {/* <SignedOut>
               <SignInButton />
             </SignedOut>
             <SignedIn>
               <UserButton />
-            </SignedIn>
-        <Navbar />
+            </SignedIn> */}
+        {/* <Navbar /> */}
+        < NavbarWrapper />
+        <main className="pt-16">{children}</main>
+
         {children}
         <Footer />
       </body>
