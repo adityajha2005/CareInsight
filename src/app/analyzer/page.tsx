@@ -5,7 +5,7 @@ import {Button} from '@/components/ui/button'
 import {Card} from '@/components/ui/card'
 import {Textarea} from '@/components/ui/textarea'
 import {Mic} from 'lucide-react'
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import {Toggle} from '@/components/ui/toggle'
 import {AnalysisResults} from '@/components/analysis-results'
 import {motion} from 'motion/react'
@@ -15,7 +15,7 @@ import { useRouter } from 'next/navigation'
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { Globe } from 'lucide-react'
 import { Navbar } from '@/components/navbar'
-
+import { useAuth } from '@clerk/nextjs';
 const spring_transition = {
     type: "spring",
     stiffness: 200, 
@@ -294,7 +294,18 @@ export default function Home() {
           console.error('Error submitting feedback:', error);
         }
       };
+    const { isLoaded, isSignedIn } = useAuth();
+    //   const router = useRouter();
     
+      useEffect(() => {
+        if (isLoaded && !isSignedIn) {
+          router.replace('/sign-in');
+        }
+      }, [isLoaded, isSignedIn, router]);
+    
+      if (!isLoaded || !isSignedIn) {
+        return null; // or a small spinner
+      }
     return (
         <main className="min-h-screen bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-blue-100 via-white to-blue-50 ">
             <Navbar 

@@ -2,7 +2,8 @@
 import AddPrescription from '@/components/AddPrescription'
 import PrescriptionDashboard from '@/components/PrescriptionDashboard'
 import { useState, useEffect } from 'react'
-
+import { useRouter } from 'next/navigation'
+import { useAuth } from '@clerk/nextjs'
 export default function PrescriptionsPage() {
   const [showAddForm, setShowAddForm] = useState(false)
   
@@ -10,7 +11,18 @@ export default function PrescriptionsPage() {
   useEffect(() => {
     console.log('PrescriptionsPage rendered')
   })
-
+  const { isLoaded, isSignedIn } = useAuth();
+    const router = useRouter();
+  
+    useEffect(() => {
+      if (isLoaded && !isSignedIn) {
+        router.replace('/sign-in');
+      }
+    }, [isLoaded, isSignedIn, router]);
+  
+    if (!isLoaded || !isSignedIn) {
+      return null; 
+    }
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
