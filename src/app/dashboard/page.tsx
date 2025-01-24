@@ -4,7 +4,8 @@ import { db } from "@/app/firebaseConfig";
 import { collection, getDocs } from "firebase/firestore";
 import Link from "next/link";
 import WellnessProfile from "@/components/WellnessProfile";
-
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@clerk/nextjs';
 interface ScheduleMedication {
   id: string;
   medication: string;
@@ -110,7 +111,18 @@ const Dashboard = () => {
     { title: "Medical Profile", href: "/profile", icon: "👤" },
     { title: "Emergency Contacts", href: "/contacts", icon: "📞" },
   ];
-
+  const { isLoaded, isSignedIn } = useAuth();
+    const router = useRouter();
+  
+    useEffect(() => {
+      if (isLoaded && !isSignedIn) {
+        router.replace('/sign-in');
+      }
+    }, [isLoaded, isSignedIn, router]);
+  
+    if (!isLoaded || !isSignedIn) {
+      return null; // or a small spinner
+    }
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white p-6">
       <div className="max-w-7xl mx-auto space-y-8">

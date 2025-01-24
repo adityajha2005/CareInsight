@@ -7,7 +7,7 @@ import { useCounter } from '@/hooks/useCounter'
 import { ChatBot } from '@/components/ChatBot'
 import { useState } from 'react'
 
-// Add new interfaces
+// Update HealthNews interface with new fields
 interface HealthNews {
   id: number
   title: string
@@ -16,6 +16,16 @@ interface HealthNews {
   date: string
   image: string
   readTime: string
+  author: string
+  readCount: number
+}
+
+// Add new interface for dashboard features
+interface DashboardFeature {
+  icon: string;
+  title: string;
+  description: string;
+  color: string;
 }
 
 const newsCategories = ['All', 'AI', 'Research', 'Wellness', 'Medical']
@@ -28,7 +38,9 @@ const latestNews: HealthNews[] = [
     category: 'AI',
     date: '2024-01-15',
     image: 'https://images.unsplash.com/photo-1584036561566-baf8f5f1b144?w=800',
-    readTime: '5 min'
+    readTime: '5 min',
+    author: 'Dr. Sarah Chen',
+    readCount: 1532
   },
   {
     id: 2,
@@ -37,7 +49,9 @@ const latestNews: HealthNews[] = [
     category: 'Research',
     date: '2024-01-14',
     image: 'https://vinbrain.net/public/uploads/1blog/ai-tam-ly/222.jpg',
-    readTime: '4 min'
+    readTime: '4 min',
+    author: 'Dr. John Doe',
+    readCount: 1024
   },
   {
     id: 3,
@@ -46,7 +60,9 @@ const latestNews: HealthNews[] = [
     category: 'Wellness',
     date: '2024-01-13',
     image: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=800',
-    readTime: '6 min'
+    readTime: '6 min',
+    author: 'Jane Smith',
+    readCount: 2048
   }
 ]
 
@@ -86,6 +102,34 @@ const uniqueFeatures = [
   },
 ]
 
+// Add after existing constants
+const dashboardFeatures: DashboardFeature[] = [
+  {
+    icon: "📊",
+    title: "Health Analytics",
+    description: "Track your vital signs, medication, and health trends over time",
+    color: "from-teal-500 to-teal-600",
+  },
+  {
+    icon: "🔔",
+    title: "Smart Notifications",
+    description: "Get timely reminders for medications and appointments",
+    color: "from-cyan-500 to-cyan-600",
+  },
+  {
+    icon: "📱",
+    title: "Mobile Access",
+    description: "Access your health data anytime, anywhere via our mobile app",
+    color: "from-blue-500 to-blue-600",
+  },
+  {
+    icon: "🤝",
+    title: "Care Team",
+    description: "Connect with healthcare providers and share health updates",
+    color: "from-indigo-500 to-indigo-600",
+  }
+];
+
 const formatStat = (stat: string) => {
   if (stat.endsWith('k+')) {
     return parseInt(stat.replace('k+', '')) * 1000;
@@ -103,6 +147,22 @@ const stats = [
   { number: '500+', label: 'Medical Protocols', icon: '🏥', duration: 2000 },
 ]
 
+// Add new animation variants
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: { 
+    opacity: 1,
+    transition: { 
+      staggerChildren: 0.1 
+    }
+  }
+}
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0 }
+}
+
 export default function Home() {
   const router = useRouter();
   const [selectedCategory, setSelectedCategory] = useState('All')
@@ -117,8 +177,12 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-[#f8fafc] mt-[-80px] overflow-x-hidden">
-      {/* Enhanced Hero Section */}
-      <div className="absolute top-0 w-full h-[600px] bg-gradient-to-b from-teal-50 via-cyan-50 to-transparent -z-10" />
+      {/* Enhanced Hero Section with Particles */}
+      <div className="absolute top-0 w-full h-[600px] bg-gradient-to-b from-teal-50 via-cyan-50 to-transparent -z-10">
+        <div className="absolute inset-0 overflow-hidden">
+          {/* Add particle effects here if needed */}
+        </div>
+      </div>
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 lg:pt-32 pb-16 lg:pb-24">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
           <motion.div
@@ -152,6 +216,14 @@ export default function Home() {
                 size="lg" 
                 variant="outline"
                 className="text-lg px-8 py-6 rounded-full border-2 border-teal-200 hover:bg-teal-50 text-teal-700"
+                onClick={() => handleNavigation('/dashboard')}
+              >
+                Go to Dashboard
+              </Button>
+              <Button 
+                size="lg" 
+                variant="ghost"
+                className="text-lg px-6 py-6 rounded-full text-teal-700 hover:bg-teal-50"
                 onClick={() => handleNavigation('/about')}
               >
                 Learn More
@@ -330,7 +402,69 @@ export default function Home() {
         </div>
       </section>
 
-      {/* News Section */}
+      {/* Add this new section before the News section */}
+      <section className="py-24 bg-gradient-to-b from-teal-50/30 to-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-4xl font-bold mb-6">
+              Your Personal Health{' '}
+              <span className="bg-gradient-to-r from-teal-600 to-cyan-600 bg-clip-text text-transparent">
+                Dashboard
+              </span>
+            </h2>
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+              Access all your health information in one secure, easy-to-use dashboard
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {dashboardFeatures.map((feature, index) => (
+              <motion.div
+                key={feature.title}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                className="bg-white rounded-2xl p-6 shadow-lg border border-teal-100 hover:shadow-xl transition-all"
+              >
+                <div className={`inline-block p-3 rounded-xl bg-gradient-to-r ${feature.color} mb-4`}>
+                  <span className="text-2xl">{feature.icon}</span>
+                </div>
+                <h3 className="text-lg font-semibold mb-2 text-gray-800">
+                  {feature.title}
+                </h3>
+                <p className="text-gray-600 text-sm">
+                  {feature.description}
+                </p>
+              </motion.div>
+            ))}
+          </div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.4 }}
+            className="mt-12 relative rounded-3xl overflow-hidden border border-teal-100 shadow-xl"
+          >
+            <div className="relative bg-gradient-to-br from-teal-500/5 to-cyan-500/5 p-8">
+              <Image
+                src="/dashboard-preview.png"
+                alt="Dashboard Preview"
+                width={1200}
+                height={600}
+                className="rounded-xl shadow-2xl"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-white/10 to-transparent" />
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Enhanced News Section with Motion */}
       <section className="py-16 lg:py-24 bg-gradient-to-b from-white to-teal-50/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
@@ -367,15 +501,18 @@ export default function Home() {
             </div>
           </motion.div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+          <motion.div 
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8"
+          >
             <AnimatePresence mode="wait">
               {filteredNews.map((news) => (
                 <motion.div
                   key={news.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
-                  transition={{ duration: 0.5 }}
+                  variants={itemVariants}
+                  layout
                   className="group cursor-pointer h-full"
                 >
                   <div className="bg-white rounded-3xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 border border-teal-100 h-full flex flex-col">
@@ -391,6 +528,11 @@ export default function Home() {
                       </div>
                     </div>
                     <div className="p-6">
+                      {/* Add author and read count */}
+                      <div className="flex justify-between items-center mb-3 text-sm text-gray-500">
+                        <span>{news.author}</span>
+                        <span>{news.readCount} reads</span>
+                      </div>
                       <div className="flex justify-between items-center mb-3 text-sm text-gray-500">
                         <span>{news.date}</span>
                         <span>{news.readTime} read</span>
@@ -406,7 +548,7 @@ export default function Home() {
                 </motion.div>
               ))}
             </AnimatePresence>
-          </div>
+          </motion.div>
 
           <div className="text-center mt-12">
             <Button
@@ -437,13 +579,23 @@ export default function Home() {
               </span>
             </h2>
             <p className="text-lg lg:text-xl text-gray-600 mb-6 lg:mb-8">Join thousands of users who trust our AI-powered healthcare platform</p>
-            <Button 
-              size="lg" 
-              className="bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-700 hover:to-cyan-700 transition-all duration-300 text-lg px-6 py-7 rounded-full shadow-lg hover:shadow-xl"
-              onClick={() => handleNavigation('/get-started')}
-            >
-              Start Your Health Journey
-            </Button>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <Button 
+                size="lg" 
+                className="bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-700 hover:to-cyan-700 transition-all duration-300 text-lg px-6 py-7 rounded-full shadow-lg hover:shadow-xl"
+                onClick={() => handleNavigation('/sign-in')}
+              >
+                Start Your Health Journey
+              </Button>
+              <Button 
+                size="lg"
+                variant="outline"
+                className="text-lg px-6 py-7 rounded-full border-2 border-teal-200 hover:bg-teal-50 text-teal-700"
+                onClick={() => handleNavigation('/dashboard')}
+              >
+                Access Dashboard
+              </Button>
+            </div>
           </div>
         </motion.div>
       </section>
