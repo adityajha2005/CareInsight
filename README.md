@@ -13,15 +13,18 @@ Empowering healthcare decisions with AI technology and making medical informatio
 ## Tech Stack
 
 ### Frontend
-- React 17.x
-- Tailwind CSS
-- Framer Motion
+- React 18.2
+- Tailwind CSS 3.3
+- Framer Motion 10.x
 - Phosphor Icons
+- TypeScript 5.0
 
 ### Backend
-- Node.js & Express
-- MongoDB with Mongoose
+- Node.js 18 LTS
+- Express 4.18
+- MongoDB 6.0 with Mongoose
 - JWT Authentication
+- OpenAI API integration
 
 ### DevOps & Tools
 - Git
@@ -44,9 +47,13 @@ git clone https://github.com/adityajha2005/careinsight.git
 cd careinsight
 ```
 
-2. Install dependencies
+2. Install dependencies (npm or pnpm)
 ```bash
+# Using npm
 npm install
+
+# Using pnpm
+pnpm install
 ```
 
 3. Configure environment variables
@@ -56,8 +63,48 @@ cp .env.example .env
 
 4. Start the application
 ```bash
+# Development
 npm run dev
+
+# Production build
+npm run build
+npm start
 ```
+
+## Available Scripts
+
+```bash
+npm run dev      # Start development server
+npm run build    # Build for production
+npm run start    # Start production server
+npm run lint     # Run ESLint
+npm run test     # Run tests
+npm run typecheck # Run TypeScript checks
+```
+
+## Project Structure
+
+```
+careinsight/
+├── src/
+│   ├── components/     # React components
+│   ├── pages/         # Page components
+│   ├── api/           # API routes
+│   ├── lib/          # Utility functions
+│   ├── types/        # TypeScript types
+│   └── styles/       # CSS styles
+├── public/           # Static files
+└── tests/           # Test files
+```
+
+## Deployment
+
+The application is deployed at: https://careinsight.render.com
+
+### Deployment Configuration
+- Main Branch: Automatically deploys to production
+- Development Branch: Deploys to staging environment
+- Preview Deployments: Available for pull requests
 
 ## Configuration
 
@@ -107,4 +154,4 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## Support
 
-For support, email support@careinsight.com or open an issue in the repository.
+For support, email 2005akjha@gmail.com or open an issue in the repository.

@@ -1,12 +1,7 @@
-
 import type { Metadata } from 'next'
 import { Geist, Geist_Mono, Inter } from 'next/font/google'
 import './globals.css'
-import { Navbar } from '@/components/navbar'
-import { ThemeProvider } from 'next-themes'
-import Footer from '@/components/Footer'
-import { ClerkProvider, SignInButton, SignedIn, SignedOut, UserButton } from '@clerk/nextjs'
-import { NavbarWrapper } from '@/components/navbar-wrapper'
+import { ClientLayout } from './client-layout'
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -31,25 +26,14 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <ClerkProvider>
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} antialiased`} 
-      >
-         {/* <SignedOut>
-              <SignInButton />
-            </SignedOut>
-            <SignedIn>
-              <UserButton />
-            </SignedIn> */}
-        {/* <Navbar /> */}
-        < NavbarWrapper />
-        <main className="pt-16">{children}</main>
-
-        {children}
-        <Footer />
+      <head>
+        <link rel="manifest" href="/manifest.json" />
+        <meta name="theme-color" content="#0d9488" />
+      </head>
+      <body className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} antialiased`}>
+        <ClientLayout>{children}</ClientLayout>
       </body>
     </html>
-    </ClerkProvider>
   )
 }

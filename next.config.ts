@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: ['images.unsplash.com', 'vinbrain.net'], // Add vinbrain.net here
+    domains: ['images.unsplash.com', 'vinbrain.net','miro.medium.com'], // Add vinbrain.net here
   },
 };
 

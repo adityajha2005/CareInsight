@@ -116,7 +116,7 @@ export default function Home() {
     : latestNews.filter(news => news.category === selectedCategory)
 
   return (
-    <main className="min-h-screen bg-[#f8fafc] overflow-x-hidden">
+    <main className="min-h-screen bg-[#f8fafc] mt-[-80px] overflow-x-hidden">
       {/* Enhanced Hero Section */}
       <div className="absolute top-0 w-full h-[600px] bg-gradient-to-b from-teal-50 via-cyan-50 to-transparent -z-10" />
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 lg:pt-32 pb-16 lg:pb-24">
