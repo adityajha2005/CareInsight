@@ -7,26 +7,67 @@ An AI-powered healthcare assistant that helps users manage prescriptions and acc
 - 🤖 AI-Powered Medical Analysis
 - 💊 Prescription Management
 - 📊 Health Insights Dashboard
+- 🔔 Smart Medication Reminders
+- 📱 Push Notifications
 - 🔒 Secure Authentication with Clerk
+- 🔄 Real-time Updates
 - 📱 Responsive Design
 
 ## Tech Stack
 
-- **Framework**: Next.js 14 (App Router)
-- **Authentication**: Clerk
+- **Frontend**: Next.js 14 (App Router)
+- **Authentication**: 
+  - Clerk (User Auth)
+  - Firebase Auth (Push Notifications)
+- **Backend & ML**:
+  - Python 3.10+
+  - FastAPI
+  - scikit-learn
+  - pandas
+  - NumPy
+- **Database & Storage**:
+  - Firebase Realtime Database
+  - Firebase Cloud Storage
+  - Firebase Cloud Messaging (FCM)
 - **AI Services**: 
   - Cohere
   - OpenAI
   - Anthropic
 - **Styling**: Tailwind CSS
-- **Deployment**: Render
+- **Deployment**: 
+  - Render (Frontend)
+  - Railway (Python API)
+
+## Features in Detail
+
+### Medication Reminders
+- Schedule medication reminders
+- Push notifications via Firebase Cloud Messaging
+- Customizable reminder frequency
+- Medication adherence tracking
+- Multi-device synchronization
+
+### Real-time Features
+- Live prescription updates
+- Instant medication alerts
+- Real-time adherence tracking
+- Synchronized across devices
+
+### ML & Analytics
+- Custom Python-based symptom analysis
+- Medical text processing with NLP
+- Health data analytics
+- Prescription pattern recognition
+- Risk factor assessment
 
 ## Getting Started
 
 ### Prerequisites
 
 - Node.js 18 or later
+- Python 3.10 or later
 - pnpm (recommended) or npm
+- pip (Python package manager)
 
 ### Local Development Setup
 
@@ -55,6 +96,21 @@ CLERK_SECRET_KEY=
 NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
 NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
 
+# Firebase Configuration
+NEXT_PUBLIC_FIREBASE_API_KEY=
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=
+NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=
+NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=
+NEXT_PUBLIC_FIREBASE_APP_ID=
+NEXT_PUBLIC_FIREBASE_VAPID_KEY=
+
+# Firebase Admin SDK (for notifications)
+FIREBASE_PROJECT_ID=
+FIREBASE_CLIENT_EMAIL=
+FIREBASE_PRIVATE_KEY=
+FIREBASE_VAPID_PRIVATE_KEY=
+
 # AI Services
 COHERE_API_KEY=
 NEXT_PUBLIC_OPEN_ROUTER_GROK_API=
@@ -64,19 +120,26 @@ ANTHROPIC_API_KEY=
 # External APIs
 NEXT_PUBLIC_NEWS_API=
 RAPID_API_KEY=
-
-# Firebase (if using Firebase features)
-NEXT_PUBLIC_FIREBASE_API_KEY=
-NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=
-NEXT_PUBLIC_FIREBASE_PROJECT_ID=
 ```
 
-4. Start the development server
+4. Set up Python environment
 ```bash
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+pip install -r requirements.txt
+```
+
+5. Start the development servers
+```bash
+# Terminal 1: Frontend
 pnpm dev
+
+# Terminal 2: Python API
+python api/main.py
 ```
 
 Visit http://localhost:3000 to see your application.
+Python API will be running at http://localhost:8000.
 
 ## Scripts
 
@@ -89,11 +152,18 @@ pnpm lint       # Run ESLint
 
 ## Project Structure
 ```
-src/
-├── app/                # App router pages
-├── components/         # Reusable components
-├── lib/               # Utility functions
-└── types/             # TypeScript types
+careinsight/
+├── src/              # Frontend source
+│   └── ...existing frontend structure...
+├── api/              # Python backend
+│   ├── models/       # ML models
+│   ├── routes/       # API endpoints
+│   ├── utils/        # Helper functions
+│   └── main.py       # API entry point
+├── ml/               # Machine learning
+│   ├── training/     # Model training
+│   └── data/         # Dataset files
+└── requirements.txt  # Python dependencies
 ```
 
 ## Support
