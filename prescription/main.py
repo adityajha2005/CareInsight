@@ -11,8 +11,8 @@ from dotenv import load_dotenv, find_dotenv
 
 load_dotenv(find_dotenv())
 
-api_key = os.getenv('COHERE_API_KEY')
-# api_key = "oYWJKYVuphtlFqaN8zSPhJEyAF9ziMJ4C5H3VYCh"
+# api_key = os.getenv('COHERE_API_KEY')
+api_key = "oYWJKYVuphtlFqaN8zSPhJEyAF9ziMJ4C5H3VYCh"
 if not api_key:
     raise ValueError("COHERE_API_KEY not found in environment variables")
 

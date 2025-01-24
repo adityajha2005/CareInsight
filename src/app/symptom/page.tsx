@@ -55,7 +55,7 @@ const symptom = () => {
         model: "x-ai/grok-2-vision-1212",
         temperature: 1,
         top_p: 1,
-        max_tokens: 2000, // Reduced from 3500 to 2000
+        max_tokens: 2600, // Reduced from 3500 to 2000
         messages: [
           {
             role: "user",
