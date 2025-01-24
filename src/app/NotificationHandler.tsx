@@ -1,21 +1,28 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { getMessaging, getToken, onMessage } from 'firebase/messaging';
 import { doc, setDoc, arrayUnion } from 'firebase/firestore';
 import { db, app } from './firebaseConfig';
 import { useUser } from '@clerk/nextjs';
 import { getAuth, signInAnonymously } from 'firebase/auth';
 
-const NOTIFICATION_SOUND = new Audio('/notification-sound.mp3'); // Add a notification sound file to your public folder
-
 const isMobile = () => {
-  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  if (typeof window !== 'undefined') {
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  }
+  return false;
 };
 
 export function NotificationHandler() {
   const { user } = useUser();
   const [permissionState, setPermissionState] = useState<NotificationPermission>('default');
   const [isInitializing, setIsInitializing] = useState(true);
+  const notificationSound = useRef<HTMLAudioElement | null>(null);
+
+  useEffect(() => {
+    // Initialize audio only on client side
+    notificationSound.current = new Audio('/notification-sound.mp3');
+  }, []);
 
   const requestAndInitializeNotifications = async () => {
     if (!('Notification' in window) && !isMobile()) {
@@ -104,15 +111,15 @@ export function NotificationHandler() {
         return;
       }
 
-      // Play notification sound
-      NOTIFICATION_SOUND.play().catch(err => console.log('Error playing sound:', err));
+      // Play notification sound using the ref
+      notificationSound.current?.play().catch(err => console.log('Error playing sound:', err));
 
       // Create desktop notification with enhanced options
       const notification = new Notification(payload.notification?.title || 'New Message', {
         body: payload.notification?.body,
-        icon: '/your-app-icon.png',
-        badge: '/notification-badge.png',
-        vibration: [200, 100, 200],
+        icon: '/logo.png',
+        badge: '/logo.png',
+        // vibration: [200, 100, 200],
         requireInteraction: true, // Notification will stay until user interacts
         silent: false, // Allow system sound
         tag: 'medication-reminder', // Group similar notifications
