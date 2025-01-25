@@ -2,6 +2,9 @@
 
 An AI-powered healthcare assistant that helps users manage prescriptions and access medical information.
 
+[Watch the Demo](CareInsight.mp4)
+
+
 ## Key Features
 
 - 🤖 AI-Powered Medical Analysis
