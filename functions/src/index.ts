@@ -1,6 +1,7 @@
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
 import { onCall, HttpsError, CallableRequest } from 'firebase-functions/v2/https';
+import { onSchedule } from 'firebase-functions/v2/scheduler';
 
 // Initialize with credentials
 admin.initializeApp({
@@ -68,10 +69,9 @@ export const snoozeReminder = onCall(async (request: CallableRequest) => {
   }
 });
 
-export const checkMedicationSchedule = functions.pubsub
-  .schedule('every 5 minutes')
-  .timeZone('UTC')
-  .onRun(async (context) => {
+export const checkMedicationSchedule = onSchedule(
+  { schedule: 'every 5 minutes', timeZone: 'UTC' },
+  async (event) => {
     const now = new Date();
     const currentHour = now.getHours().toString().padStart(2, '0');
     const currentMinute = Math.floor(now.getMinutes() / 15) * 15;
@@ -146,9 +146,10 @@ export const checkMedicationSchedule = functions.pubsub
       });
 
       await Promise.all(notificationPromises);
-      return null;
+      return;
     } catch (error) {
       console.error('Error in medication schedule check:', error);
-      return null;
+      return;
     }
-  });
+  }
+);
