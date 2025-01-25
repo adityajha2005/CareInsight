@@ -128,7 +128,7 @@ export const checkMedicationSchedule = functions.pubsub.onMessagePublished('fire
             };
 
             try {
-              const response = await admin.messaging().sendMulticast(message);
+              const response = await admin.messaging().sendEachForMulticast(message);
               console.log(`Sent notifications for ${prescription.medication}:`, response);
 
               // Clean up invalid tokens
