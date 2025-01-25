@@ -13,59 +13,63 @@ admin.initializeApp({
 // Remove unused interface
 // Instead, use string type directly for tokens
 
-export const handleMedicationTaken = functions.https.onCall(async (data, context) => {
-  if (!context || !context.auth) {
-    throw new functions.https.HttpsError('unauthenticated', 'User must be logged in');
+export const handleMedicationTaken = functions.https.onCall(
+  async (data: any, context: functions.https.CallableContext) => {
+    if (!context.auth) {
+      throw new functions.https.HttpsError('unauthenticated', 'User must be logged in');
+    }
+
+    const { prescriptionId } = data;
+    
+    try {
+      // Log medication taken
+      await admin.firestore()
+        .collection('medicationLogs')
+        .add({
+          prescriptionId,
+          userId: context.auth.uid,
+          takenAt: admin.firestore.FieldValue.serverTimestamp(),
+          status: 'taken'
+        });
+
+      return { success: true, message: 'Medication logged successfully' };
+    } catch (error) {
+      console.error('Error logging medication:', error);
+      throw new functions.https.HttpsError('internal', 'Failed to log medication');
+    }
   }
+);
 
-  const { prescriptionId } = data;
-  
-  try {
-    // Log medication taken
-    await admin.firestore()
-      .collection('medicationLogs')
-      .add({
-        prescriptionId,
-        userId: context.auth.uid,
-        takenAt: admin.firestore.FieldValue.serverTimestamp(),
-        status: 'taken'
-      });
+export const snoozeReminder = functions.https.onCall(
+  async (data: any, context: functions.https.CallableContext) => {
+    if (!context.auth) {
+      throw new functions.https.HttpsError('unauthenticated', 'User must be logged in');
+    }
 
-    return { success: true, message: 'Medication logged successfully' };
-  } catch (error) {
-    console.error('Error logging medication:', error);
-    throw new functions.https.HttpsError('internal', 'Failed to log medication');
+    const { prescriptionId } = data;
+    const snoozeMinutes = 15;
+
+    try {
+      // Schedule a new reminder
+      const newReminder = new Date();
+      newReminder.setMinutes(newReminder.getMinutes() + snoozeMinutes);
+
+      await admin.firestore()
+        .collection('reminders')
+        .add({
+          prescriptionId,
+          userId: context.auth.uid,
+          scheduledFor: admin.firestore.Timestamp.fromDate(newReminder),
+          status: 'snoozed'
+        });
+
+      return { success: true, nextReminder: newReminder.toISOString() };
+    } catch (error) {
+      console.error('Error snoozing reminder:', error);
+      throw new functions.https.HttpsError('internal', 'Failed to snooze reminder');
+    }
   }
-});
-
-export const snoozeReminder = functions.https.onCall(async (data, context) => {
-  if (!context || !context.auth) {
-    throw new functions.https.HttpsError('unauthenticated', 'User must be logged in');
-  }
-
-  const { prescriptionId } = data;
-  const snoozeMinutes = 15;
-
-  try {
-    // Schedule a new reminder
-    const newReminder = new Date();
-    newReminder.setMinutes(newReminder.getMinutes() + snoozeMinutes);
-
-    await admin.firestore()
-      .collection('reminders')
-      .add({
-        prescriptionId,
-        userId: context.auth.uid,
-        scheduledFor: admin.firestore.Timestamp.fromDate(newReminder),
-        status: 'snoozed'
-      });
-
-    return { success: true, nextReminder: newReminder.toISOString() };
-  } catch (error) {
-    console.error('Error snoozing reminder:', error);
-    throw new functions.https.HttpsError('internal', 'Failed to snooze reminder');
-  }
-});
+);
 
 export const checkMedicationSchedule = functions.pubsub
   .schedule('every 5 minutes')
