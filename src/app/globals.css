@@ -129,3 +129,19 @@ body {
   );
   filter: blur(40px);
 }
+
+@font-face {
+  font-family: 'Geist';
+  src: url('/fonts/Geist.woff2') format('woff2'),
+       url('/fonts/Geist.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Geist Mono';
+  src: url('/fonts/GeistMono.woff2') format('woff2'),
+       url('/fonts/GeistMono.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
