@@ -2,12 +2,12 @@ import { NextResponse } from 'next/server';
 import { spawn } from 'child_process';
 import path from 'path';
 
-export async function POST(req: Request) {
+export async function POST(req: Request): Promise<Response> {
   try {
     const { imageUrl } = await req.json();
     const pythonPath = path.join(process.cwd(), 'newenv', 'Scripts', 'python.exe');
 
-    return new Promise((resolve) => {
+    return new Promise<Response>((resolve) => {
       const pythonProcess = spawn(pythonPath, [
         path.join(process.cwd(), 'prescription', 'main.py'),
         '--image',
