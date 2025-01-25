@@ -2,7 +2,7 @@
 
 An AI-powered healthcare assistant that helps users manage prescriptions and access medical information.
 
-[Watch the Demo](CareInsight.mp4)
+[Watch the Demo on YouTube](https://youtu.be/uKxrZahZoB8)
 
 
 ## Key Features
@@ -153,21 +153,6 @@ pnpm start      # Start production server
 pnpm lint       # Run ESLint
 ```
 
-## Project Structure
-```
-careinsight/
-├── src/              # Frontend source
-│   └── ...existing frontend structure...
-├── api/              # Python backend
-│   ├── models/       # ML models
-│   ├── routes/       # API endpoints
-│   ├── utils/        # Helper functions
-│   └── main.py       # API entry point
-├── ml/               # Machine learning
-│   ├── training/     # Model training
-│   └── data/         # Dataset files
-└── requirements.txt  # Python dependencies
-```
 
 ## Support
 
