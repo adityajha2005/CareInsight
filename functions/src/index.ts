@@ -1,4 +1,3 @@
-import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
 import { onCall, HttpsError, CallableRequest } from 'firebase-functions/v2/https';
 import { onSchedule } from 'firebase-functions/v2/scheduler';
@@ -103,7 +102,7 @@ export const checkMedicationSchedule = onSchedule(
 
             if (tokens.length === 0) return null;
 
-            const message = {
+            const payload: admin.messaging.MessagingPayload = {
               notification: {
                 title: 'Time for your medication',
                 body: `${prescription.medication} - ${prescription.dosage}`,
@@ -114,19 +113,17 @@ export const checkMedicationSchedule = onSchedule(
                 dosage: prescription.dosage,
                 time: `${time.hour}:${time.minute}`,
                 click_action: 'OPEN_MEDICATION_DETAILS'
-              },
-              tokens
+              }
             };
 
             try {
-              const response = await admin.messaging().sendMulticast(message);
+              const response = await admin.messaging().sendToDevice(tokens, payload);
               console.log(`Sent notifications for ${prescription.medication}:`, response);
 
               // Clean up invalid tokens
               if (response.failureCount > 0) {
-                // Type the tokens directly as string[]
-                const invalidTokens = response.responses
-                  .map((resp, idx) => !resp.success ? tokens[idx] : null)
+                const invalidTokens = response.results
+                  .map((res, idx) => res.error ? tokens[idx] : null)
                   .filter((token): token is string => token !== null);
 
                 if (invalidTokens.length > 0) {
