@@ -102,7 +102,8 @@ export const checkMedicationSchedule = onSchedule(
 
             if (tokens.length === 0) return null;
 
-            const payload: admin.messaging.MessagingPayload = {
+            const messages = tokens.map((token: string) => ({
+              token,
               notification: {
                 title: 'Time for your medication',
                 body: `${prescription.medication} - ${prescription.dosage}`,
@@ -113,19 +114,17 @@ export const checkMedicationSchedule = onSchedule(
                 dosage: prescription.dosage,
                 time: `${time.hour}:${time.minute}`,
                 click_action: 'OPEN_MEDICATION_DETAILS'
-              }
-            };
+              },
+            }));
 
             try {
-              const response = await admin.messaging().sendToDevice(tokens, payload);
+              const response = await admin.messaging().sendAll(messages);
               console.log(`Sent notifications for ${prescription.medication}:`, response);
 
-              // Clean up invalid tokens
               if (response.failureCount > 0) {
-                const invalidTokens = response.results
-                  .map((res, idx) => res.error ? tokens[idx] : null)
+                const invalidTokens = response.responses
+                  .map((res, idx) => !res.success ? tokens[idx] : null)
                   .filter((token): token is string => token !== null);
-
                 if (invalidTokens.length > 0) {
                   const validTokens = tokens.filter((token: string) => !invalidTokens.includes(token));
                   await userDoc.ref.update({ notificationTokens: validTokens });
