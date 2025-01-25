@@ -14,7 +14,7 @@ admin.initializeApp({
 // Instead, use string type directly for tokens
 
 export const handleMedicationTaken = functions.https.onCall(async (data, context) => {
-  if (!context.auth) {
+  if (!context || !context.auth) {
     throw new functions.https.HttpsError('unauthenticated', 'User must be logged in');
   }
 
@@ -39,7 +39,7 @@ export const handleMedicationTaken = functions.https.onCall(async (data, context
 });
 
 export const snoozeReminder = functions.https.onCall(async (data, context) => {
-  if (!context.auth) {
+  if (!context || !context.auth) {
     throw new functions.https.HttpsError('unauthenticated', 'User must be logged in');
   }
 
