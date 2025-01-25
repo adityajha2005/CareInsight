@@ -1,19 +1,17 @@
 import type { Metadata } from 'next'
-import { Geist, Geist_Mono, Inter } from 'next/font/google'
+import { Inter, Roboto_Mono } from 'next/font/google'
 import './globals.css'
 import { ClientLayout } from './client-layout'
 
-const geistSans = Geist({
-  variable: '--font-geist-sans',
+const inter = Inter({
+  variable: '--font-inter',
   subsets: ['latin'],
 })
 
-const geistMono = Geist_Mono({
-  variable: '--font-geist-mono',
+const robotoMono = Roboto_Mono({
+  variable: '--font-roboto-mono',
   subsets: ['latin'],
 })
-
-const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
 
 export const metadata: Metadata = {
   title: 'CareInsight - Symptom Checker',
@@ -31,7 +29,7 @@ export default function RootLayout({
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#0d9488" />
       </head>
-      <body className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} antialiased`}>
+      <body className={`${inter.variable} ${robotoMono.variable} antialiased`}>
         <ClientLayout>{children}</ClientLayout>
       </body>
     </html>
