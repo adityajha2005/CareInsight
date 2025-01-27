@@ -129,7 +129,7 @@ export const checkMedicationSchedule = onSchedule(
                   const validTokens = tokens.filter((token: string) => !invalidTokens.includes(token));
                   await userDoc.ref.update({ notificationTokens: validTokens });
                 }
-              }
+               }
 
               return response;
             } catch (error) {
