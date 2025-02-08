@@ -1,6 +1,6 @@
 'use client'
-import React, { useState , useEffect} from 'react'
-import OpenAI from "openai"
+import React, { useState, useEffect } from 'react'
+// Remove OpenAI import
 import { FileUpload } from '@/components/ui/file-upload'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
@@ -16,15 +16,7 @@ import { motion } from 'framer-motion'
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@clerk/nextjs'
 
-const openai = new OpenAI({
-  baseURL: "https://openrouter.ai/api/v1",
-  apiKey: process.env.NEXT_PUBLIC_OPEN_ROUTER_GROK_API,
-  dangerouslyAllowBrowser: true ,
-  defaultHeaders: {
-    "HTTP-Referer": "https://care-insight.vercel.app",
-    "X-Title": "CareInsight"
-  }
-});
+// Remove the OpenAI client initialization
 
 const symptom = () => {
   const [description, setDescription] = useState('')
@@ -49,33 +41,76 @@ const symptom = () => {
     setLoading(true);
     try {
       const base64Data = base64Image.split(',')[1];
-      const trimmedDescription = description.slice(0, 250); // Reduced from 500 to 250
       
-      const completion = await openai.chat.completions.create({
-        model: "x-ai/grok-2-vision-1212",
-        temperature: 0.7,
-        top_p: 1,
-        max_tokens: 1000,
+      const requestBody = {
+        model: "mistralai/mixtral-8x7b-instruct",  // Try a different model
         messages: [
           {
             role: "user",
             content: [
-              { type: "text", text: "Brief medical analysis and no bold text , and start 1line about which disease is this, then 2-3 lines about it then cure:" }, 
+              {
+                type: "text",
+                text: "Analyze this medical image. What condition does it show? Provide a brief analysis and potential treatments."
+              },
               {
                 type: "image_url",
-                image_url: { url: `data:image/jpeg;base64,${base64Data}` }
-              },
-              { type: "text", text: trimmedDescription }
+                image_url: {
+                  url: `data:image/jpeg;base64,${base64Data}`
+                }
+              }
             ]
           }
-        ]
+        ],
+        temperature: 0.5,
+        max_tokens: 500,
+        top_p: 0.9,
+        stream: false
+      };
+
+      console.log('Request Headers:', {
+        "Authorization": "Bearer " + process.env.NEXT_PUBLIC_OPEN_ROUTER_GROK_API?.slice(0, 5) + "...",
+        "HTTP-Referer": "https://care-insight.vercel.app",
+        "X-Title": "CareInsight"
       });
 
-      setAnalysis(completion.choices?.[0]?.message?.content || 'No analysis available');
+      const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${process.env.NEXT_PUBLIC_OPEN_ROUTER_GROK_API}`,
+          "HTTP-Referer": "https://care-insight.vercel.app",
+          "X-Title": "CareInsight",
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(requestBody)
+      });
+
+      console.log('Response status:', response.status);
+      const responseText = await response.text();
+      console.log('Raw response:', responseText);
+
+      let data;
+      try {
+        data = JSON.parse(responseText);
+      } catch (e) {
+        console.error('Failed to parse JSON:', e);
+        throw new Error('Invalid JSON response from API');
+      }
+
+      console.log('Parsed response:', data);
+
+      if (!response.ok) {
+        throw new Error(`API Error (${response.status}): ${data.error?.message || 'Unknown error'}`);
+      }
+
+      if (!data.choices?.[0]?.message?.content) {
+        console.log('Response structure:', JSON.stringify(data, null, 2));
+        throw new Error('Response missing required fields');
+      }
+
+      setAnalysis(data.choices[0].message.content);
     } catch (error: any) {
-      setAnalysis(error.response?.data?.code === 402
-        ? "Insufficient credits. Please upgrade plan at openrouter.ai/credits"
-        : `Error: ${error.message}`);
+      console.error('Full error:', error);
+      setAnalysis(`Error: ${error.message}\nPlease try again or contact support if the issue persists.`);
     } finally {
       setLoading(false);
     }
