@@ -43,26 +43,27 @@ const symptom = () => {
       const base64Data = base64Image.split(',')[1];
       
       const requestBody = {
-        model: "mistralai/mixtral-8x7b-instruct",  // Try a different model
+        model: "mistralai/mixtral-8x7b-instruct",
         messages: [
           {
             role: "user",
             content: [
               {
                 type: "text",
-                text: "Analyze this medical image. What condition does it show? Provide a brief analysis and potential treatments."
+                text: "Analyze this medical image and provide a response in the following format:\n\n" +
+                      "Suspected Condition: [Name of the condition]\n\n" +
+                      "Analysis:\n[2-3 lines explaining why this condition is suspected and key observations]\n\n" +
+                      "Recommended Actions:\n[List of suggested treatments or next steps]"
               },
               {
                 type: "image_url",
-                image_url: {
-                  url: `data:image/jpeg;base64,${base64Data}`
-                }
+                image_url: { url: `data:image/jpeg;base64,${base64Data}` }
               }
             ]
           }
         ],
-        temperature: 0.5,
-        max_tokens: 500,
+         temperature: 0.7,
+        max_tokens: 1000,
         top_p: 0.9,
         stream: false
       };
