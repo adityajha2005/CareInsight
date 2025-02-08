@@ -44,6 +44,7 @@
     "clsx": "^2.1.1",
     "cohere-ai": "^7.15.4",
     "date-fns": "^2.30.0",
+    "embla-carousel-react": "^8.5.2",
     "firebase": "^11.2.0",
     "firebase-admin": "^13.0.2",
     "firebase-functions": "^6.2.0",
