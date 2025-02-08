@@ -5,7 +5,7 @@ import { collection, getDocs } from "firebase/firestore";
 import Link from "next/link";
 import WellnessProfile from "@/components/WellnessProfile";
 import { useRouter } from 'next/navigation';
-import { useAuth } from '@clerk/nextjs';
+import { useAuth, useUser } from '@clerk/nextjs';
 import { FaPills, FaClipboardList, FaHistory, FaUser, FaCalendar, FaBell, FaChartLine } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
@@ -26,6 +26,12 @@ interface UserProfile {
   lastCheckup: string;
   healthScore: number;
   nextAppointment: string;
+  phone: string;
+  address: string;
+  emergencyContact: string;
+  bloodType: string;
+  allergies: string;
+  medicalConditions: string;
 }
 
 interface HealthGoal {
@@ -83,7 +89,13 @@ const Dashboard = () => {
     avatar: "/avatar.png",
     lastCheckup: "2024-01-15",
     healthScore: 85,
-    nextAppointment: "2024-02-01"
+    nextAppointment: "2024-02-01",
+    phone: "",
+    address: "",
+    emergencyContact: "",
+    bloodType: "",
+    allergies: "",
+    medicalConditions: "",
   });
 
   const [healthGoals] = useState<HealthGoal[]>([
@@ -96,6 +108,26 @@ const Dashboard = () => {
     { id: 1, name: "Jane Doe", relation: "Spouse", phone: "+1234567890" },
     { id: 2, name: "Dr. Smith", relation: "Primary Doctor", phone: "+1987654321" },
   ]);
+
+  const { user } = useUser();
+  const { isLoaded, isSignedIn } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (isLoaded && !isSignedIn) {
+      router.replace('/sign-in');
+    }
+  }, [isLoaded, isSignedIn, router]);
+
+  useEffect(() => {
+    if (user) {
+      setUserProfile(prevProfile => ({
+        ...prevProfile,
+        name: user.fullName || user.firstName || "User",
+        avatar: user.imageUrl || "/avatar.png"
+      }));
+    }
+  }, [user]);
 
   useEffect(() => {
     const fetchStats = async () => {
@@ -158,64 +190,94 @@ const Dashboard = () => {
     fetchTodaySchedule();
   }, []);
 
-  const { isLoaded, isSignedIn } = useAuth();
-    const router = useRouter();
-  
-    useEffect(() => {
-      if (isLoaded && !isSignedIn) {
-        router.replace('/sign-in');
-      }
-    }, [isLoaded, isSignedIn, router]);
-  
-    if (!isLoaded || !isSignedIn) {
-      return null; // or a small spinner
-    }
+  if (!isLoaded || !isSignedIn) {
+    return null; // or a small spinner
+  }
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-teal-50 p-6">
+    <><div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-teal-50 p-6">
       <div className="max-w-7xl mx-auto space-y-8">
         {/* User Profile Quick View */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="bg-white rounded-2xl shadow-lg p-6 border border-teal-100"
         >
-          <div className="flex items-center gap-6">
-            <div className="relative h-20 w-20">
-              <Image
-                src={userProfile.avatar}
-                alt="Profile"
-                fill
-                className="rounded-full object-cover"
-              />
-              <div className="absolute bottom-0 right-0 h-5 w-5 bg-green-500 rounded-full border-2 border-white" />
+          <div className="space-y-6">
+            <div className="flex items-center gap-6">
+              <div className="relative h-20 w-20">
+                <Image
+                  src={userProfile.avatar}
+                  alt="Profile"
+                  fill
+                  className="rounded-full object-cover" />
+                <div className="absolute bottom-0 right-0 h-5 w-5 bg-green-500 rounded-full border-2 border-white" />
+              </div>
+              <div className="flex-1">
+                <h2 className="text-2xl font-bold text-gray-800">{userProfile.name}</h2>
+                <div className="flex gap-4 mt-2 text-sm text-gray-600">
+                  <span>Last Checkup: {userProfile.lastCheckup}</span>
+                  <span>Health Score: {userProfile.healthScore}%</span>
+                  <span>Next Appointment: {userProfile.nextAppointment}</span>
+                </div>
+              </div>
+              <Button
+                variant="outline"
+                className="rounded-full"
+                onClick={() => router.push('/profile')}
+              >
+                Edit Profile
+              </Button>
             </div>
-            <div className="flex-1">
-              <h2 className="text-2xl font-bold text-gray-800">{userProfile.name}</h2>
-              <div className="flex gap-4 mt-2 text-sm text-gray-600">
-                <span>Last Checkup: {userProfile.lastCheckup}</span>
-                <span>Health Score: {userProfile.healthScore}%</span>
-                <span>Next Appointment: {userProfile.nextAppointment}</span>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6 p-4 bg-gray-50 rounded-xl">
+              <div className="space-y-4">
+                <h3 className="font-semibold text-gray-700">Contact Information</h3>
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2">
+                    <span className="text-gray-500">Phone:</span>
+                    <span className="font-medium">{userProfile.phone || 'Not set'}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-gray-500">Address:</span>
+                    <span className="font-medium">{userProfile.address || 'Not set'}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-gray-500">Emergency Contact:</span>
+                    <span className="font-medium">{userProfile.emergencyContact || 'Not set'}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <h3 className="font-semibold text-gray-700">Medical Information</h3>
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2">
+                    <span className="text-gray-500">Blood Type:</span>
+                    <span className="font-medium">{userProfile.bloodType || 'Not set'}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-gray-500">Allergies:</span>
+                    <span className="font-medium">{userProfile.allergies || 'None'}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-gray-500">Medical Conditions:</span>
+                    <span className="font-medium">{userProfile.medicalConditions || 'None'}</span>
+                  </div>
+                </div>
               </div>
             </div>
-            <Button
-              variant="outline"
-              className="rounded-full"
-              onClick={() => router.push('/profile')}
-            >
-              Edit Profile
-            </Button>
           </div>
         </motion.div>
 
         {/* Hero Section */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="bg-gradient-to-r from-teal-600 to-cyan-600 rounded-3xl p-8 text-white shadow-lg"
         >
           <h1 className="text-4xl font-bold mb-4">Welcome to CareInsight</h1>
           <p className="text-teal-100 text-lg">Your personal health companion</p>
-          
+
           {/* Health Tip Card */}
           <div className="mt-6 bg-white/10 backdrop-blur-md rounded-xl p-6 border border-white/20">
             <div className="flex items-center gap-3">
@@ -273,10 +335,9 @@ const Dashboard = () => {
                   <span className="text-sm text-gray-500">{goal.progress}/{goal.target} {goal.unit}</span>
                 </div>
                 <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
-                  <div 
+                  <div
                     className="h-full bg-teal-500 rounded-full transition-all duration-500"
-                    style={{ width: `${(goal.progress / goal.target) * 100}%` }}
-                  />
+                    style={{ width: `${(goal.progress / goal.target) * 100}%` }} />
                 </div>
               </div>
             ))}
@@ -335,7 +396,7 @@ const Dashboard = () => {
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {emergencyContacts.map(contact => (
-              <div 
+              <div
                 key={contact.id}
                 className="flex items-center justify-between p-4 bg-gray-50 rounded-xl hover:bg-teal-50 transition-all duration-300"
               >
@@ -343,7 +404,7 @@ const Dashboard = () => {
                   <div className="font-medium text-gray-800">{contact.name}</div>
                   <div className="text-sm text-gray-500">{contact.relation}</div>
                 </div>
-                <a 
+                <a
                   href={`tel:${contact.phone}`}
                   className="px-4 py-2 bg-teal-100 text-teal-700 rounded-lg text-sm font-medium hover:bg-teal-200 transition-colors"
                 >
@@ -355,33 +416,34 @@ const Dashboard = () => {
         </motion.div>
 
         {/* Quick Actions Grid */}
-        <div className="mt-12">
-          <h2 className="text-2xl font-semibold text-gray-800 mb-6">Quick Actions</h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            {quickActions.map((action, index) => (
-              <Link 
-                key={index} 
-                href={action.href}
-                className={`${action.color} rounded-2xl p-6 hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02] text-white`}
-              >
-                <div className="text-3xl mb-3">{action.icon}</div>
-                <div className="font-medium text-lg">{action.title}</div>
-              </Link>
-            ))}
-          </div>
-        </div>
-
-        <style jsx>{`
-          @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-          }
-          .animate-fade-in {
-            animation: fadeIn 0.5s ease-in-out;
-          }
-        `}</style>
+        <div className="mt-12"></div>
+        <h2 className="text-2xl font-semibold text-gray-800 mb-6">Quick Actions</h2>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+        {quickActions.map((action, index) => (
+          <Link
+            key={index}
+            href={action.href}
+            className={`${action.color} rounded-2xl p-6 hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02] text-white`}
+          >
+            <div className="text-3xl mb-3">{action.icon}</div>
+            <div className="font-medium text-lg">{action.title}</div>
+          </Link>
+        ))}
       </div>
     </div>
+    <style jsx>
+      {`
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        .animate-fade-in {
+          animation: fadeIn 0.5s ease-in-out;
+        }
+      `}
+    </style>
+    </div>
+    </>
   );
 };
 

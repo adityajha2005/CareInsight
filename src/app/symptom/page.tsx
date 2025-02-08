@@ -53,9 +53,9 @@ const symptom = () => {
       
       const completion = await openai.chat.completions.create({
         model: "x-ai/grok-2-vision-1212",
-        temperature: 1,
+        temperature: 0.7,
         top_p: 1,
-        max_tokens: 2600, // Reduced from 3500 to 2000
+        max_tokens: 1000,
         messages: [
           {
             role: "user",
