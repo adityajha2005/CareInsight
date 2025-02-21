@@ -25,7 +25,7 @@ interface Coordinates {
       `https://nominatim.openstreetmap.org/search?postalcode=${pincode}&country=india&format=json`,
       {
         headers: {
-          "User-Agent": "MediConnect/1.0",
+          "User-Agent": "CareInsight/1.0",
         },
       }
     );
